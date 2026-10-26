@@ -9,3 +9,8 @@ desktop.ini
 # Documents are deployed separately, not stored in git
 *.pdf
 *.PDF
+
+# Local environment (keep .env.example)
+.env
+.env.local
+.env.*.local

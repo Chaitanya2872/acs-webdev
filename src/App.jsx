@@ -10,6 +10,7 @@ const ClientsPage = lazy(() => import('./pages/ClientsPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const DocumentListPage = lazy(() => import('./pages/DocumentListPage'));
 const InvestorInformationPage = lazy(() => import('./pages/InvestorInformationPage'));
+const LegacyDocumentPage = lazy(() => import('./pages/LegacyDocumentPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage'));
 const ProductPage = lazy(() => import('./pages/ProductPage'));
@@ -33,6 +34,8 @@ export default function App() {
           <Route path="stock-exchange-filings" element={<StockExchangeFilingsPage />} />
           <Route path=":slug" element={<DocumentListPage />} />
         </Route>
+        {/* Old filing URLs whose file is no longer on the web server resolve through the document portal. */}
+        <Route path="assets/docs/*" element={<LegacyDocumentPage />} />
         {/* Unknown paths, including old *.html links, are resolved (or 404'd) here. */}
         <Route path="*" element={<NotFoundPage />} />
       </Route>

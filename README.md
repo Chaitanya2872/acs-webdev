@@ -38,7 +38,7 @@ src/
 
 | To change…                         | Edit                                                     |
 | ---------------------------------- | -------------------------------------------------------- |
-| Add an investor filing             | Put the file in `public/assets/docs/<folder>/`, then add `{ title, href, type }` to the top of its list in `src/data/investorDocuments.js` |
+| Add, replace or remove an investor filing | Use the document portal (Website Documents). No code change or deploy needed — see *Investor documents* below |
 | Board, committees, directorships   | `src/data/board.js`                                      |
 | Auditors / RTA / grievance contact | `src/data/investorInformation.js`                        |
 | Team members                       | `src/data/team.js` (photos in `public/assets/img/team/`) |
@@ -47,11 +47,34 @@ src/
 | Menu, footer links, filing groups  | `src/data/navigation.js`                                 |
 | Phone, email, offices, socials     | `src/data/site.js`                                       |
 
-A new investor document page only needs a new entry in `documentPages`; it is served at `/investors/<slug>` automatically. Link to it from `src/data/navigation.js`.
+A new investor document page needs a portal category with the same slug and, for the menu, a link in `src/data/navigation.js`; it is served at `/investors/<slug>` automatically. Adding an entry to `documentPages` gives it a title and an offline fallback.
+
+## Investor documents
+
+Filings are managed in the document portal (`acs_webdev_portal`): administrators upload a PDF, choose the
+category (= website page), and publish. The file is stored in S3, its metadata in the portal database, and
+`DocumentListPage` loads the published list from the portal's public API at runtime:
+
+```
+GET {VITE_DOCUMENTS_API_URL}/public/sections/<slug>/documents
+```
+
+Set the API root at build time (see `.env.example`):
+
+```bash
+VITE_DOCUMENTS_API_URL=https://portal-api.acstechnologies.co.in/api/v1
+```
+
+- Publishing, unpublishing and replacing a file take effect without rebuilding the site (listings are cached for
+  up to `PUBLIC_LIST_CACHE_SECONDS`, 60 s by default).
+- If the variable is unset or the API is unreachable, pages show the bundled lists in
+  `src/data/investorDocuments.js`, which link to the original files in `public/assets/docs/`.
+- Old links to `/assets/docs/...` keep working: while the file exists Apache serves it; if it is ever removed,
+  `.htaccess` hands the request to the app and `LegacyDocumentPage` forwards it to the migrated document.
 
 ## Deployment (cPanel / Apache)
 
 1. `npm run build`
 2. Upload the contents of `dist/` to `public_html/`. The `.htaccess` it includes routes every non-file URL to `index.html`, so deep links and old URLs such as `/annual_reports.html` keep working (they redirect in the browser).
 
-`dist/` includes the ~590 MB of filings in `assets/docs`. For routine deploys you only need to re-upload `index.html`, `static/` and any new documents.
+`dist/` includes the ~590 MB of filings in `assets/docs`. For routine deploys you only need to re-upload `index.html` and `static/`; new filings are published from the portal, not deployed. Keep the existing `assets/docs` files on the server until the portal migration has been verified.

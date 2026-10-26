@@ -79,6 +79,24 @@
   font-size: 15px;
 }
 
+/* Document listings while loading / when empty; min-height keeps the footer from jumping */
+.documents-status {
+  min-height: 160px;
+  text-align: center;
+}
+
+.documents-year-heading {
+  width: 60%;
+  margin: 24px auto 8px;
+  color: #0095da;
+}
+
+@media (max-width: 991px) {
+  .documents-year-heading {
+    width: 100%;
+  }
+}
+
 @media (max-width: 991px) {
   .table-style {
     width: 100%;

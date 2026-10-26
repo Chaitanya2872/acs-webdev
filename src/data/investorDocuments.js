@@ -1,5 +1,9 @@
-// Investor document listings, rendered by pages/DocumentListPage.jsx.
-// To publish a new filing, drop the file under public/assets/docs/ and add an entry at the top of its list.
+// Investor document listing pages, rendered by pages/DocumentListPage.jsx.
+// Filings are published from the document portal (stored in S3, served via the portal's public API) and
+// appear here without a website deploy. These bundled lists are:
+//   - the fallback shown when VITE_DOCUMENTS_API_URL is unset or the API cannot be reached, and
+//   - the source the portal's legacy migration imported the existing filings from.
+// Do not add new filings here; upload them in the portal. Each page's slug must match a portal category.
 
 export const documentPages = [
   {
