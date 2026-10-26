@@ -1,0 +1,134 @@
+/*--------------------------------------------------------------
+# React component styles
+# Rules that used to live in inline style="" attributes of the
+# static pages, plus small additions for the React-only UI.
+--------------------------------------------------------------*/
+
+.accent-icon {
+  color: var(--accent-color);
+}
+
+/* Home: clients carousel */
+.clients .swiper-wrapper {
+  align-items: center;
+}
+
+/* Home: hero news ticker */
+.news-item-primary {
+  color: #5cc8f5;
+  font-weight: 600;
+}
+
+.news-item-highlight {
+  color: #ffd166;
+  font-weight: 500;
+}
+
+/* Portfolio pages */
+.capability-card {
+  border-top: 3px solid var(--accent-color) !important;
+  border-radius: 8px;
+}
+
+.offering-card {
+  background: #ebf4ff;
+  border: 1px solid #cce3f5;
+}
+
+.offering-card h6 {
+  color: var(--accent-color);
+}
+
+.portfolio-cta {
+  background: var(--secondary-color);
+}
+
+.portfolio-cta h3,
+.portfolio-cta h4 {
+  color: #ffffff;
+}
+
+.portfolio-cta h3 {
+  margin-bottom: 12px;
+}
+
+.portfolio-cta h4 {
+  margin-bottom: 8px;
+}
+
+.portfolio-cta-highlight {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.portfolio-cta-highlight p {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.portfolio-cta-icon {
+  font-size: 3.5rem;
+  color: var(--accent-color);
+}
+
+.portfolio-cta-text {
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 28px;
+}
+
+/* Investor pages */
+.filings-intro {
+  font-size: 15px;
+}
+
+@media (max-width: 991px) {
+  .table-style {
+    width: 100%;
+  }
+}
+
+/* Footer */
+.footer-muted {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+.footer-address {
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.8;
+}
+
+.footer-contact {
+  font-size: 13px;
+}
+
+.footer-contact > i {
+  color: var(--accent-color);
+}
+
+.footer-contact .bi-arrow-up-right {
+  font-size: 11px;
+}
+
+.footer-copyright {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+}
+
+/* Contact forms */
+.form-status {
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+.form-status-success {
+  color: #198754;
+}
+
+.form-status-error {
+  color: #dc3545;
+}
+
+/* Placeholder while a lazily-loaded page chunk downloads */
+.page-loading {
+  min-height: 60vh;
+}

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+_archive/
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Documents are deployed separately, not stored in git
+*.pdf
+*.PDF

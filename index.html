@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ACS Technologies</title>
+    <meta
+      name="description"
+      content="ACS Technologies Ltd (BSE: 530745, NSE: ACSTECH) — AI, custom software, IT infrastructure, geospatial and smart facility solutions since 1980."
+    />
+
+    <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/img/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="ACS Technologies" />
+    <link rel="manifest" href="/assets/img/favicon/site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;500;600;700;800&display=swap"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Browsers block the app's JavaScript when this file is opened straight from disk; explain instead of showing a blank page.
+      if (location.protocol === 'file:') {
+        document.getElementById('root').innerHTML =
+          '<div style="max-width:640px;margin:80px auto;font-family:sans-serif;line-height:1.6;padding:0 16px">' +
+          '<h2>This site must be served, not opened as a file</h2>' +
+          '<p>In the project folder run <code>npm run dev</code> (development) or <code>npm run build</code> then <code>npm run preview</code>, ' +
+          'and open the address it prints. To publish, upload the contents of <code>dist/</code> to the web server.</p></div>';
+      }
+    </script>
+  </body>
+</html>

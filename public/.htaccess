@@ -1,0 +1,19 @@
+# Single-page app routing for Apache/cPanel hosting.
+# Real files (PDFs, images, PHP mail endpoints, built JS/CSS) are served as-is;
+# every other path, including old *.html URLs, is handed to index.html and
+# resolved by React Router (see src/routes/legacyRedirects.js).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Hashed build assets never change; let browsers cache them for a year.
+<IfModule mod_headers.c>
+  <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|css|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>

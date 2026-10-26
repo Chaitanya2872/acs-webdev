@@ -1,0 +1,90 @@
+/*--------------------------------------------------------------
+# Motion: scroll reveals, parallax layers, page transitions
+# Elements opt in with data-aos="fade-up|fade-left|fade-right|zoom-in|zoom-out"
+# and an optional data-aos-delay (ms). useReveal() adds .aos-animate.
+--------------------------------------------------------------*/
+
+html {
+  scroll-behavior: smooth;
+}
+
+[data-aos] {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-duration: 0.8s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: none;
+}
+
+[data-aos='fade-up'] { transform: translate3d(0, 40px, 0); }
+[data-aos='fade-down'] { transform: translate3d(0, -40px, 0); }
+[data-aos='fade-left'] { transform: translate3d(48px, 0, 0); }
+[data-aos='fade-right'] { transform: translate3d(-48px, 0, 0); }
+[data-aos='zoom-in'] { transform: scale(0.92); }
+[data-aos='zoom-out'] { transform: scale(1.06); }
+
+[data-aos][data-aos-delay='50'].aos-animate { transition-delay: 50ms; }
+[data-aos][data-aos-delay='100'].aos-animate { transition-delay: 100ms; }
+[data-aos][data-aos-delay='150'].aos-animate { transition-delay: 150ms; }
+[data-aos][data-aos-delay='200'].aos-animate { transition-delay: 200ms; }
+[data-aos][data-aos-delay='250'].aos-animate { transition-delay: 250ms; }
+[data-aos][data-aos-delay='300'].aos-animate { transition-delay: 300ms; }
+[data-aos][data-aos-delay='350'].aos-animate { transition-delay: 350ms; }
+[data-aos][data-aos-delay='400'].aos-animate { transition-delay: 400ms; }
+[data-aos][data-aos-delay='450'].aos-animate { transition-delay: 450ms; }
+[data-aos][data-aos-delay='500'].aos-animate { transition-delay: 500ms; }
+[data-aos][data-aos-delay='550'].aos-animate { transition-delay: 550ms; }
+[data-aos][data-aos-delay='600'].aos-animate { transition-delay: 600ms; }
+[data-aos][data-aos-delay='650'].aos-animate { transition-delay: 650ms; }
+[data-aos][data-aos-delay='700'].aos-animate { transition-delay: 700ms; }
+[data-aos][data-aos-delay='750'].aos-animate { transition-delay: 750ms; }
+[data-aos][data-aos-delay='800'].aos-animate { transition-delay: 800ms; }
+[data-aos][data-aos-delay='850'].aos-animate { transition-delay: 850ms; }
+[data-aos][data-aos-delay='900'].aos-animate { transition-delay: 900ms; }
+[data-aos][data-aos-delay='950'].aos-animate { transition-delay: 950ms; }
+[data-aos][data-aos-delay='1000'].aos-animate { transition-delay: 1000ms; }
+
+[data-parallax] {
+  will-change: transform;
+}
+
+/* Route change: fade the new page in */
+.page-transition {
+  animation: page-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-aos],
+  [data-aos].aos-animate,
+  .page-transition {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Slide-in reveals start offset sideways; never let that create a horizontal scrollbar. */
+.main {
+  overflow-x: clip;
+}
