@@ -1,20 +1,22 @@
 import { testimonials } from '../../data/home';
-import SectionTitle from '../common/SectionTitle';
+import HomeHeading from './HomeHeading';
 
 export default function Testimonials() {
   return (
-    <section className="home-testimonials section">
-      <SectionTitle caption="Testimonials" lead="What Clients" emphasis="Say" />
+    <section className="lp-section">
       <div className="container">
-        <div className="row g-4">
+        <HomeHeading title="Testimonials" text="What our clients say." />
+        <div className="row g-3">
           {testimonials.map((item, i) => (
-            <div key={item.text} className="col-md-4" data-aos="fade-up" data-aos-delay={i * 120}>
-              <figure className="home-testimonial">
-                <i className="bi bi-quote home-testimonial-mark" aria-hidden="true" />
-                <blockquote>{item.text}</blockquote>
-                <span className="home-testimonial-icon">
-                  <i className={`bi ${item.icon}`} />
-                </span>
+            <div key={item.text} className="col-md-4" data-aos="fade-up" data-aos-delay={i * 100}>
+              <figure className="lp-quote">
+                <blockquote>&ldquo;{item.text}&rdquo;</blockquote>
+                <figcaption>
+                  <span className="lp-avatar lp-avatar--static">
+                    <i className={`bi ${item.icon}`} />
+                  </span>
+                  ACS client
+                </figcaption>
               </figure>
             </div>
           ))}

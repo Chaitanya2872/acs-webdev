@@ -6,13 +6,15 @@ export default function NewsletterForm() {
 
   return (
     <form className="php-email-form" onSubmit={onSubmit}>
-      <div className="newsletter-form">
-        <input type="email" name="email" required aria-label="Email address" />
-        <input type="submit" value="Subscribe" disabled={status === 'sending'} />
+      <div className="ft-subscribe">
+        <i className="bi bi-envelope" aria-hidden="true" />
+        <input type="email" name="email" required placeholder="you@company.com" aria-label="Email address" />
+        <button type="submit" disabled={status === 'sending'}>
+          {status === 'sending' ? 'Sending…' : 'Subscribe'}
+        </button>
       </div>
-      {status === 'sending' && <div className="loading d-block">Loading</div>}
       {status === 'error' && <div className="error-message d-block">{error}</div>}
-      {status === 'sent' && <div className="sent-message d-block">Your subscription request has been sent. Thank you!</div>}
+      {status === 'sent' && <div className="sent-message d-block">You&apos;re subscribed. Thank you!</div>}
     </form>
   );
 }

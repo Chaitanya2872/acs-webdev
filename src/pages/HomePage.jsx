@@ -1,9 +1,8 @@
 import AboutSection from '../components/home/AboutSection';
 import CallToAction from '../components/home/CallToAction';
-import CertificationStrip from '../components/home/CertificationStrip';
 import ClientsCarousel from '../components/home/ClientsCarousel';
 import HeroSection from '../components/home/HeroSection';
-import ParallaxBanner from '../components/home/ParallaxBanner';
+import PortfolioFlight from '../components/home/PortfolioFlight';
 import PortfolioGrid from '../components/home/PortfolioGrid';
 import ServicesSection from '../components/home/ServicesSection';
 import StatsBand from '../components/home/StatsBand';
@@ -15,17 +14,16 @@ export default function HomePage() {
   useDocumentTitle(null);
 
   return (
-    <>
+    <div className="lp">
       <HeroSection />
-      <StatsBand />
-      <CertificationStrip />
-      <AboutSection />
       <PortfolioGrid />
-      <ParallaxBanner />
+      <StatsBand />
+      <AboutSection />
       <ServicesSection />
       <Testimonials />
       <ClientsCarousel />
       <CallToAction />
-    </>
+      <PortfolioFlight />
+    </div>
   );
 }

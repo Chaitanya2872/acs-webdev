@@ -7,6 +7,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import './styles/main.css';
 import './styles/components.css';
 import './styles/motion.css';
+import './styles/header.css';
+import './styles/footer.css';
+import './styles/gallery.css';
 
 import App from './App';
 

@@ -94,6 +94,14 @@ export const stats = [
   { value: certifications.length, label: 'ISO & CMMI Certifications', icon: 'bi-patch-check' },
 ];
 
+// Filter chips above the portfolio grid; each portfolio belongs to one group.
+export const portfolioGroups = [
+  { key: 'digital', label: 'AI & Software', slugs: ['artificial-intelligence-solutions', 'software-development'] },
+  { key: 'infrastructure', label: 'Infrastructure', slugs: ['it-infrastructure', 'telecom-services', 'managed-services'] },
+  { key: 'physical', label: 'Security & Geospatial', slugs: ['security-surveillance', 'geospatial-technologies'] },
+  { key: 'facilities', label: 'Facilities & Engineering', slugs: ['smart-facilities-management', 'electro-mechanical-projects'] },
+];
+
 // Short card copy for the portfolio grid: the label/icon from the menu plus each page's own headline.
 export const portfolioCards = portfolios.map((portfolio) => ({
   slug: portfolio.slug,
@@ -101,4 +109,5 @@ export const portfolioCards = portfolios.map((portfolio) => ({
   tagline: portfolio.heading,
   image: portfolio.image,
   to: paths.portfolio(portfolio.slug),
+  group: portfolioGroups.find((group) => group.slugs.includes(portfolio.slug))?.key,
 }));

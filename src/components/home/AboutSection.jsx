@@ -1,31 +1,29 @@
 import { aboutParagraphs } from '../../data/home';
-import SectionTitle from '../common/SectionTitle';
 
 export default function AboutSection() {
+  const [lead, ...rest] = aboutParagraphs;
+
   return (
-    <section id="about" className="home-about section">
-      <SectionTitle caption="About" lead="How It All" emphasis="Started" />
+    <section id="about" className="lp-section lp-about">
       <div className="container">
-        <div className="row gy-5 align-items-center">
-          <div className="col-lg-6" data-aos="fade-right">
-            <div className="home-about-media">
-              <div className="home-about-frame">
-                <img src="/assets/img/about-1.jpg" alt="ACS Technologies History" loading="lazy" data-parallax="0.08" />
-              </div>
-              <div className="home-about-badge" data-parallax="-0.1">
-                <span className="home-about-badge-year">1980</span>
-                <span>Founded by engineers from IBM, Bell Labs &amp; ECIL</span>
+        <div className="row gy-5">
+          <div className="col-lg-5">
+            <div className="lp-about-aside" data-aos="fade-up">
+              <span className="lp-eyebrow">About</span>
+              <span className="lp-about-year">1980</span>
+              <p>Founded by engineers from IBM, Bell Labs &amp; ECIL.</p>
+              <div className="lp-about-photo" data-aos="reveal">
+                <img src="/assets/img/about-1.jpg" alt="ACS Technologies history" loading="lazy" data-parallax="0.06" />
               </div>
             </div>
           </div>
-          <div className="col-lg-6" data-aos="fade-left" data-aos-delay="150">
-            <div className="ps-lg-4">
-              {aboutParagraphs.map((text) => (
-                <p key={text} className="text-justify about-text">
-                  {text}
-                </p>
-              ))}
-            </div>
+          <div className="col-lg-7" data-aos="fade-up" data-aos-delay="120">
+            <p className="lp-about-lead">{lead}</p>
+            {rest.map((text) => (
+              <p key={text} className="lp-about-text">
+                {text}
+              </p>
+            ))}
           </div>
         </div>
       </div>

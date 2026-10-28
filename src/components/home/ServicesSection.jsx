@@ -1,27 +1,27 @@
 import { Link } from 'react-router-dom';
 
 import { services } from '../../data/home';
-import SectionTitle from '../common/SectionTitle';
+import HomeHeading from './HomeHeading';
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="services section light-background">
-      <SectionTitle caption="Services" lead="Our" emphasis="Services" />
+    <section id="services" className="lp-section">
       <div className="container">
-        <div className="row gy-4">
+        <HomeHeading title="Services" text="How we work with you, from first build to everyday operations." />
+        <div className="row g-3">
           {services.map((service, i) => (
-            <div key={service.title} className="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay={(i + 1) * 100}>
-              <div className="service-item position-relative">
-                <div className="service-item-img-wrap">
-                  <img src={service.image} alt={service.title} className="services-cards-img" loading="lazy" />
+            <div key={service.title} className="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay={i * 100}>
+              <Link to={service.to} className="lp-service">
+                <div className="lp-service-media" data-aos="reveal" data-aos-delay={i * 100 + 150}>
+                  <img src={service.image} alt="" loading="lazy" />
                 </div>
-                <div className="service-item-body">
-                  <span className="service-tag">{service.tag}</span>
-                  <h3>{service.title}</h3>
-                  <p className="text-justify">{service.text}</p>
-                </div>
-                <Link to={service.to} className="stretched-link" aria-label={service.title} />
-              </div>
+                <span className="lp-tag">{service.tag}</span>
+                <h3>{service.title}</h3>
+                <p>{service.text}</p>
+                <span className="lp-arrow" aria-hidden="true">
+                  <i className="bi bi-arrow-up-right" />
+                </span>
+              </Link>
             </div>
           ))}
         </div>
