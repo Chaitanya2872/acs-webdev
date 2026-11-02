@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { footerInvestorLinks, footerServiceLinks } from '../../data/navigation';
+import { footerCompanyLinks, footerInvestorLinks, footerServiceLinks } from '../../data/navigation';
 import { company, offices, socialLinks } from '../../data/site';
 import { paths } from '../../routes/paths';
 import Logo from '../common/Logo';
@@ -98,7 +98,7 @@ export default function Footer() {
         </div>
 
         <div className="row gy-4 ft-sitemap">
-          <div className="col-md-6">
+          <div className="col-md-3">
             <Logo width={52} />
             <h5>{company.name}</h5>
             <p>{company.tagline}</p>
@@ -108,6 +108,7 @@ export default function Footer() {
           </div>
           <LinkColumn title="Services" links={footerServiceLinks} />
           <LinkColumn title="Investors" links={footerInvestorLinks} />
+          <LinkColumn title="Company" links={footerCompanyLinks} />
         </div>
 
         <div className="ft-bottom">

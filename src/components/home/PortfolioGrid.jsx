@@ -1,27 +1,31 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { portfolioCards, portfolioGroups } from '../../data/home';
 import { portfolioLinks } from '../../data/navigation';
+import TiltedGridHero from '../ui/TiltedGridHero';
 import HomeHeading from './HomeHeading';
 
 const iconFor = (to) => portfolioLinks.find((link) => link.to === to)?.icon ?? 'bi-grid';
 
-// Varying image heights give the grid its staggered, masonry rhythm; the sequence shifts every
-// three cards so neighbouring columns don't line up row for row.
-const SHAPES = ['tall', 'wide', 'square'];
-const shapeFor = (i) => SHAPES[(i + Math.floor(i / 3)) % SHAPES.length];
-
+// Portfolio images stream round a curved band (TiltedGridHero), centre flat and ends bending towards
+// the viewer. The band itself is decorative, so the portfolios are also listed as links beneath it;
+// the chips filter both.
 export default function PortfolioGrid() {
   const [group, setGroup] = useState('all');
   const chips = [{ key: 'all', label: 'All' }, ...portfolioGroups];
-  const cards = group === 'all' ? portfolioCards : portfolioCards.filter((card) => card.group === group);
+  const cards = useMemo(
+    () => (group === 'all' ? portfolioCards : portfolioCards.filter((card) => card.group === group)),
+    [group],
+  );
+  // Stable per filter, so the band doesn't re-preload its images on every render.
+  const images = useMemo(() => cards.map((card) => ({ src: card.image, alt: card.title })), [cards]);
 
   return (
-    <section id="portfolios" className="lp-section">
-      <div className="container">
+    <section id="portfolios" className="lp-section lp-tilt-section">
+      <div className="lp-tilt-head">
         <HomeHeading title="Portfolios" text="Nine practices, one accountable partner." />
-        <div className="lp-chips" role="tablist" aria-label="Filter portfolios" data-aos="fade-up">
+        <div className="lp-chips" role="tablist" aria-label="Filter portfolios">
           {chips.map((chip) => (
             <button
               key={chip.key}
@@ -35,27 +39,31 @@ export default function PortfolioGrid() {
             </button>
           ))}
         </div>
-
-        <div className="lp-masonry" key={group}>
-          {cards.map((card, i) => (
-            <Link key={card.slug} to={card.to} className="lp-card lp-card-enter" data-slug={card.slug} style={{ '--i': i }}>
-              <div className={`lp-card-media lp-card-media--${shapeFor(i)}`}>
-                <img src={card.image} alt="" loading="lazy" />
-                <span className="lp-avatar" aria-hidden="true">
-                  <i className={`bi ${iconFor(card.to)}`} />
-                </span>
-                <span className="lp-arrow" aria-hidden="true">
-                  <i className="bi bi-arrow-up-right" />
-                </span>
-              </div>
-              <div className="lp-card-body">
-                <h3>{card.title}</h3>
-                <p>{card.tagline}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
       </div>
+
+      <TiltedGridHero
+        key={group}
+        images={images}
+        className="lp-tilt"
+        tileHeight={40}
+        aspectRatio={4 / 3}
+        axis={50}
+        curve={72}
+        speed={3.5}
+        fade={10}
+      />
+
+      <ul className="lp-tilt-links">
+        {cards.map((card) => (
+          <li key={card.slug}>
+            <Link to={card.to} className="lp-tilt-link">
+              <i className={`bi ${iconFor(card.to)}`} aria-hidden="true" />
+              {card.title}
+              <i className="bi bi-arrow-up-right" aria-hidden="true" />
+            </Link>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

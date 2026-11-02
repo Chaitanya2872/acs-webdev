@@ -2,28 +2,26 @@ import AboutSection from '../components/home/AboutSection';
 import CallToAction from '../components/home/CallToAction';
 import ClientsCarousel from '../components/home/ClientsCarousel';
 import HeroSection from '../components/home/HeroSection';
-import PortfolioFlight from '../components/home/PortfolioFlight';
 import PortfolioGrid from '../components/home/PortfolioGrid';
 import ServicesSection from '../components/home/ServicesSection';
-import StatsBand from '../components/home/StatsBand';
 import Testimonials from '../components/home/Testimonials';
 import useDocumentTitle from '../hooks/useDocumentTitle';
+import useStackedSections from '../hooks/useStackedSections';
 import '../styles/home.css';
 
 export default function HomePage() {
   useDocumentTitle(null);
+  const stackRef = useStackedSections();
 
   return (
-    <div className="lp">
+    <div className="lp lp-stack" ref={stackRef}>
       <HeroSection />
       <PortfolioGrid />
-      <StatsBand />
       <AboutSection />
       <ServicesSection />
       <Testimonials />
       <ClientsCarousel />
       <CallToAction />
-      <PortfolioFlight />
     </div>
   );
 }

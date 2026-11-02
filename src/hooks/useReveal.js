@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
-// Reveals [data-aos] elements as they scroll into view by adding .aos-animate (styled in styles/motion.css).
+// Reveals [data-aos] elements as they scroll into view by adding .aos-animate (styled in styles/motion.css),
+// and resets them once they leave the viewport, so the reveal replays whichever way the reader scrolls back.
 // A MutationObserver picks up content that mounts later (lazy routes, tab panels), so nothing stays hidden.
 export default function useReveal() {
   useEffect(() => {
@@ -15,9 +16,7 @@ export default function useReveal() {
     const intersections = new IntersectionObserver(
       (entries) =>
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('aos-animate');
-          intersections.unobserve(entry.target);
+          entry.target.classList.toggle('aos-animate', entry.isIntersecting);
         }),
       { rootMargin: '0px 0px -8% 0px', threshold: 0.01 },
     );
@@ -25,7 +24,7 @@ export default function useReveal() {
     // Tracked per effect run (not on the DOM) so a re-run, e.g. under StrictMode, re-observes everything.
     const observed = new WeakSet();
     const observeNew = () =>
-      document.querySelectorAll('[data-aos]:not(.aos-animate)').forEach((el) => {
+      document.querySelectorAll('[data-aos]').forEach((el) => {
         if (observed.has(el)) return;
         observed.add(el);
         intersections.observe(el);

@@ -13,8 +13,9 @@ export const portfolioLinks = [
   { label: 'Managed Services', to: paths.portfolio('managed-services'), icon: 'bi-headset' },
 ];
 
+// Centre of the header: kept to four entries. Home is the logo, Contact is the header's own button,
+// and Team / Newsletters live in the footer's Company column.
 export const mainNav = [
-  { label: 'Home', to: paths.home },
   { label: 'Portfolios', children: portfolioLinks },
   {
     label: 'Products',
@@ -69,9 +70,6 @@ export const mainNav = [
       { label: 'MOA & AOA', to: paths.documents('moa-and-aoa') },
     ],
   },
-  { label: 'Team', to: paths.team },
-  { label: 'Newsletters', to: paths.documents('newsletters') },
-  { label: 'Contact', to: paths.contact },
 ];
 
 export const footerServiceLinks = [
@@ -82,6 +80,13 @@ export const footerServiceLinks = [
   { label: 'Geospatial Technologies', to: paths.portfolio('geospatial-technologies') },
   { label: 'Smart Facilities', to: paths.portfolio('smart-facilities-management') },
   { label: 'Managed Services', to: paths.portfolio('managed-services') },
+];
+
+export const footerCompanyLinks = [
+  { label: 'Clients', to: paths.clients },
+  { label: 'Team', to: paths.team },
+  { label: 'Newsletters', to: paths.documents('newsletters') },
+  { label: 'Contact', to: paths.contact },
 ];
 
 export const footerInvestorLinks = [

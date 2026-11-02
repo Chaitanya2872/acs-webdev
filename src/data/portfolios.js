@@ -4,7 +4,7 @@ export const portfolios = [
   {
     slug: 'artificial-intelligence-solutions',
     title: ['Artificial Intelligence', 'Solutions'],
-    image: '/assets/img/services/Artificial Intelligence.avif',
+    image: '/assets/img/portfolios/ai.jpg',
     imageAlt: 'Artificial Intelligence Solutions — ACS Technologies',
     heading: 'Applied AI — Built for Real-World Impact',
     paragraphs: [
@@ -75,7 +75,7 @@ export const portfolios = [
   {
     slug: 'software-development',
     title: ['Software', 'Development'],
-    image: '/assets/img/services/Software Development.avif',
+    image: '/assets/img/portfolios/software.jpg',
     imageAlt: 'Software Development — ACS Technologies',
     heading: 'Bespoke Software — Engineered for Your Business',
     paragraphs: [
@@ -146,7 +146,7 @@ export const portfolios = [
   {
     slug: 'it-infrastructure',
     title: ['IT', 'Infrastructure'],
-    image: '/assets/img/services/IT Infrastructure.avif',
+    image: '/assets/img/portfolios/infrastructure.jpg',
     imageAlt: 'IT Infrastructure — ACS Technologies',
     heading: 'End-to-End IT Infrastructure Transformation',
     paragraphs: [
@@ -217,7 +217,7 @@ export const portfolios = [
   {
     slug: 'security-surveillance',
     title: ['Security &', 'Surveillance'],
-    image: '/assets/img/services/Security & Surveillance.avif',
+    image: '/assets/img/portfolios/security.jpg',
     imageAlt: 'Security and Surveillance — ACS Technologies',
     heading: 'Intelligent, Integrated Physical Security',
     paragraphs: [
@@ -308,7 +308,7 @@ export const portfolios = [
   {
     slug: 'geospatial-technologies',
     title: ['Geospatial', 'Technologies'],
-    image: '/assets/img/services/Geospatial Technologies.avif',
+    image: '/assets/img/portfolios/geospatial.jpg',
     imageAlt: 'Geospatial Technologies — ACS Technologies',
     heading: 'Geospatial Intelligence — Decades of Domain Expertise',
     paragraphs: [
@@ -391,7 +391,7 @@ export const portfolios = [
   {
     slug: 'smart-facilities-management',
     title: ['Smart Facilities', 'Management'],
-    image: '/assets/img/services/SFM Main.jpg',
+    image: '/assets/img/portfolios/facilities.jpg',
     imageAlt: 'Smart Facilities Management — ACS Technologies',
     heading: 'Transforming Facilities into Smart Integrated Spaces',
     paragraphs: [
@@ -482,7 +482,7 @@ export const portfolios = [
   {
     slug: 'electro-mechanical-projects',
     title: ['Electro Mechanical', 'Projects'],
-    image: '/assets/img/services/Electro Mechanical Projects.png',
+    image: '/assets/img/portfolios/electromechanical.jpg',
     imageAlt: 'Electro Mechanical Projects — ACS Technologies',
     heading: 'Reliable Electro-Mechanical Solutions, Engineered to Last',
     paragraphs: [
@@ -576,7 +576,7 @@ export const portfolios = [
   {
     slug: 'telecom-services',
     title: ['Telecom', 'Services'],
-    image: '/assets/img/services/Telecom Services.avif',
+    image: '/assets/img/portfolios/telecom.jpg',
     imageAlt: 'Telecom Services — ACS Technologies',
     heading: 'Telecom Solutions Built on Decades of Network Expertise',
     paragraphs: [
@@ -655,7 +655,7 @@ export const portfolios = [
   {
     slug: 'managed-services',
     title: ['Managed', 'Services'],
-    image: '/assets/img/services/Managed Services.avif',
+    image: '/assets/img/portfolios/managed.jpg',
     imageAlt: 'Managed Services — ACS Technologies',
     heading: 'Managed IT Services — Optimised for Performance, Built for Reliability',
     paragraphs: [

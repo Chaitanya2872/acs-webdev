@@ -1,0 +1,42 @@
+/*--------------------------------------------------------------
+# Tilted grid hero (components/ui/TiltedGridHero.jsx)
+# Plain-CSS stand-ins for the Tailwind utilities the original shadcn component used.
+# The host must give .tgh an explicit height: its lengths are container-query units (cqh/cqw).
+--------------------------------------------------------------*/
+.tgh {
+  position: relative;
+  overflow: hidden;
+}
+
+.tgh-band {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+
+.tgh-tile {
+  position: absolute;
+}
+
+.tgh-slice {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  background: #f4f4f5;
+}
+
+.tgh-slice--first {
+  border-radius: 8px 0 0 8px;
+}
+
+.tgh-slice--last {
+  border-radius: 0 8px 8px 0;
+}
+
+.tgh-slice img {
+  position: absolute;
+  top: 0;
+  max-width: none;
+  object-fit: cover;
+}

@@ -5,8 +5,63 @@
 
 /* ---------- Hero ---------- */
 .lp-hero {
+  position: relative;
   padding: 72px 0 0;
   overflow: hidden;
+}
+
+/* Faint skyline behind the headline (HeroSkyline). */
+.lp-skyline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 0;
+  width: min(55%, 900px);
+  height: 80%;
+  pointer-events: none;
+}
+
+/* Hairline outlines however far the SVG is scaled. */
+.lp-skyline rect {
+  vector-effect: non-scaling-stroke;
+}
+
+.lp-skyline-row {
+  will-change: transform;
+}
+
+/* Light-blue pulses lapping a few building outlines. */
+.lp-skyline-traces rect {
+  stroke: #5cb8ff;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 9 91;
+  filter: drop-shadow(0 0 3px rgba(92, 184, 255, 0.7));
+  animation: lp-skyline-trace 3.5s linear infinite;
+}
+
+@keyframes lp-skyline-trace {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-skyline-traces rect {
+    animation: none;
+  }
+}
+
+/* Full-bleed like the header: same edge gutter instead of Bootstrap's capped container.
+   Stacked above the skyline. */
+.lp-hero > .container {
+  position: relative;
+  z-index: 1;
+  max-width: none;
+  padding-inline: clamp(16px, 3vw, 48px);
 }
 
 .lp-hero h1 {
@@ -54,6 +109,15 @@
 }
 
 /* Rotating announcement pill */
+/* The rotating news pill sits under the call-to-action buttons. */
+.lp-hero-announce {
+  margin-top: 28px;
+}
+
+.lp-hero-announce + .lp-hero-meta {
+  margin-top: 24px;
+}
+
 .lp-announce {
   display: inline-flex;
   align-items: center;
@@ -176,6 +240,22 @@
   transform: none;
 }
 
+/* No WebGL2: a flat shaded sphere stands in for the globe. */
+.lp-orbit--flat::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  width: calc(var(--globe-r, 160px) * 2);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #eef1f6 70%, #e2e7ef);
+  box-shadow: 0 0 30px rgba(140, 170, 215, 0.25);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
 .lp-orbit-hint {
   position: absolute;
   left: 50%;
@@ -196,194 +276,25 @@
   pointer-events: none;
 }
 
-/* ---------- Stats + certifications ---------- */
-.lp-stats {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr;
-  grid-auto-rows: minmax(170px, auto);
-  gap: 16px;
+/* ---------- Stacked sections ---------- */
+/* Each section sticks (top set by useStackedSections) and fades out as the next comes up over it; a
+   white glow above each section softens the edge it comes up with. */
+.lp.lp-stack > section {
+  position: sticky;
+  top: var(--stack-top, 0px);
+  padding-bottom: 96px;
+  background-color: #ffffff;
 }
 
-.lp-stat {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 24px;
-  overflow: hidden;
-  border-radius: 24px;
-  background: var(--lp-surface);
-  transition: transform 0.5s var(--lp-ease), box-shadow 0.5s var(--lp-ease), background 0.5s var(--lp-ease);
+.lp.lp-stack > section + section {
+  box-shadow: 0 -56px 56px #ffffff;
 }
 
-.lp-stat:not(.lp-stat--lead):hover {
-  background: #ffffff;
-  transform: translateY(-4px);
-  box-shadow: 0 0 0 1px var(--lp-line), 0 24px 40px -28px rgba(20, 24, 40, 0.35);
+.lp.lp-stack > section.is-covered {
+  visibility: hidden;
 }
 
-.lp-stat-icon {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 17px;
-  color: var(--lp-ink);
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-}
-
-.lp-stat-value {
-  font-size: clamp(36px, 4vw, 52px);
-  font-weight: 600;
-  letter-spacing: -0.045em;
-  line-height: 1;
-  color: var(--lp-ink);
-  font-variant-numeric: tabular-nums;
-}
-
-.lp-stat-value sup {
-  top: -0.85em;
-  margin-left: 2px;
-  font-size: 0.42em;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--lp-muted);
-}
-
-.lp-stat-label {
-  font-size: 14px;
-  color: var(--lp-muted);
-}
-
-/* Lead card: years in business */
-.lp-stat--lead {
-  grid-row: span 2;
-  justify-content: space-between;
-  gap: 0;
-  padding: 32px;
-  color: #ffffff;
-  background:
-    radial-gradient(120% 90% at 100% 0%, rgba(0, 149, 218, 0.35), transparent 55%),
-    radial-gradient(80% 70% at 0% 100%, rgba(99, 102, 241, 0.18), transparent 60%),
-    #0b0c10;
-}
-
-.lp-stat--lead::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: linear-gradient(160deg, #000 0%, transparent 70%);
-  -webkit-mask-image: linear-gradient(160deg, #000 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.lp-stat-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.lp-stat--lead .lp-stat-value {
-  margin-top: 40px;
-  font-size: clamp(96px, 12vw, 168px);
-  letter-spacing: -0.06em;
-  color: #ffffff;
-}
-
-.lp-stat--lead .lp-stat-value sup {
-  top: -1.1em;
-  font-size: 0.32em;
-  color: #5cc8f5;
-}
-
-.lp-stat--lead .lp-stat-label {
-  margin-top: 6px;
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.lp-timeline {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 36px;
-  padding-top: 18px;
-}
-
-.lp-timeline::before,
-.lp-timeline-bar {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.lp-timeline-bar {
-  background: linear-gradient(90deg, #0095da, #5cc8f5);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 2s var(--lp-ease) 0.3s;
-}
-
-.aos-animate .lp-timeline-bar {
-  transform: none;
-}
-
-.lp-timeline-mark {
-  position: relative;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.45);
-  font-variant-numeric: tabular-nums;
-}
-
-.lp-timeline-mark::before {
-  content: '';
-  position: absolute;
-  top: -22px;
-  left: 0;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #0b0c10;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-}
-
-.lp-timeline-mark.is-now {
-  color: #ffffff;
-}
-
-.lp-timeline-mark.is-now::before {
-  left: auto;
-  right: 0;
-  width: 10px;
-  height: 10px;
-  top: -24px;
-  border: 0;
-  background: #5cc8f5;
-  box-shadow: 0 0 0 4px rgba(92, 200, 245, 0.2);
-}
-
+/* ---------- Certifications (About) ---------- */
 .lp-certs {
   display: flex;
   flex-wrap: wrap;
@@ -403,127 +314,252 @@
   color: var(--lp-text);
 }
 
-/* ---------- Portfolio masonry ---------- */
-.lp-masonry {
-  columns: 3;
-  column-gap: 16px;
+/* ---------- Portfolio curved band (TiltedGridHero) ---------- */
+.lp-tilt-section {
+  --tilt-gutter: clamp(16px, 3vw, 48px);
 }
 
-.lp-card {
-  display: block;
-  break-inside: avoid;
-  margin-bottom: 28px;
+.lp-tilt-head {
+  padding-inline: var(--tilt-gutter);
 }
 
-.lp-card-enter {
-  animation: lp-card-in 0.6s var(--lp-ease) both;
-  animation-delay: calc(var(--i) * 60ms);
-}
-
-@keyframes lp-card-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 16px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-.lp-card-media {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--lp-radius);
-  border: 1px solid var(--lp-line);
-  background: var(--lp-surface);
-}
-
-.lp-card-media--tall {
-  aspect-ratio: 4 / 5;
-}
-
-.lp-card-media--wide {
-  aspect-ratio: 4 / 3;
-}
-
-.lp-card-media--square {
-  aspect-ratio: 1 / 1;
-}
-
-.lp-card-media img {
+.lp-tilt {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s var(--lp-ease);
+  height: clamp(340px, 42vw, 600px);
 }
 
-.lp-card-body {
-  padding: 12px 4px 0;
+.lp-tilt-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 8px 0 0;
+  padding: 0 var(--tilt-gutter);
+  list-style: none;
 }
 
-.lp-card-body h3 {
-  margin: 0 0 2px;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.lp-card-body p {
-  margin: 0;
+.lp-tilt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--lp-line);
+  border-radius: 999px;
   font-size: 14px;
-  line-height: 1.45;
+  font-weight: 500;
+  color: var(--lp-ink);
+  background: #ffffff;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.lp-tilt-link .bi:first-child {
+  color: var(--accent-color);
+}
+
+.lp-tilt-link .bi:last-child {
+  font-size: 12px;
   color: var(--lp-muted);
 }
 
-/* ---------- About ---------- */
-.lp-about-aside {
-  position: sticky;
-  top: 120px;
+.lp-tilt-link:hover {
+  color: #ffffff;
+  border-color: var(--lp-ink);
+  background: var(--lp-ink);
+}
+
+.lp-tilt-link:hover .bi {
+  color: #ffffff;
+}
+
+/* ---------- About + KPIs ---------- */
+.lp.lp-stack > .lp-about {
+  padding-top: 64px;
+  overflow-x: clip;
+}
+
+.lp-about-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-bottom: 20px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--lp-line);
+}
+
+.lp-about-since {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--lp-muted);
+}
+
+.lp-about-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0095da;
+  box-shadow: 0 0 0 4px rgba(0, 149, 218, 0.15);
+}
+
+.lp-about-lead {
+  max-width: 1120px;
+  margin: 0;
+  font-size: clamp(22px, 2.6vw, 36px);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.025em;
+  color: var(--lp-ink);
+}
+
+/* KPI strip: five figures between hairlines, each with a blue rule that draws in on reveal. */
+.lp-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 56px;
+  border-top: 1px solid var(--lp-line);
+  border-bottom: 1px solid var(--lp-line);
+}
+
+.lp-kpi {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 28px 24px 30px;
+}
+
+.lp-kpi + .lp-kpi {
+  border-left: 1px solid var(--lp-line);
+}
+
+.lp-kpi::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0095da, #5cc8f5);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.4s var(--lp-ease) 0.2s;
+}
+
+.lp-kpi.aos-animate::before {
+  transform: none;
+}
+
+.lp-kpi-icon {
+  font-size: 18px;
+  color: #0095da;
+}
+
+.lp-kpi-value {
+  margin-top: 18px;
+  font-size: clamp(40px, 4.4vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--lp-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.lp-kpi-value sup {
+  top: -0.9em;
+  margin-left: 2px;
+  font-size: 0.4em;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: #0095da;
+}
+
+.lp-kpi-label {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--lp-muted);
+}
+
+.lp-about-detail {
+  margin-top: 64px;
 }
 
 .lp-about-year {
   display: block;
-  margin: 8px 0 6px;
-  font-size: clamp(72px, 10vw, 128px);
+  margin-bottom: 12px;
+  font-size: clamp(64px, 8vw, 112px);
   font-weight: 600;
   letter-spacing: -0.06em;
   line-height: 0.9;
-  color: var(--lp-ink);
+  color: transparent;
+  -webkit-text-stroke: 1px #c9d3e0;
 }
 
-.lp-about-aside p {
-  font-size: 15px;
-  color: var(--lp-muted);
+.lp-about-text {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--lp-text);
+}
+
+/* The photos fly in from the bottom right (scroll-linked, transforms set in AboutSection.jsx). */
+.lp-about-collage {
+  position: relative;
+  max-width: 520px;
+  aspect-ratio: 1 / 0.92;
 }
 
 .lp-about-photo {
-  max-width: 380px;
-  margin-top: 28px;
-  aspect-ratio: 4 / 3;
+  position: absolute;
+  margin: 0;
   overflow: hidden;
   border-radius: var(--lp-radius);
   border: 1px solid var(--lp-line);
+  background: #f3f5f8;
+  box-shadow: 0 18px 40px -24px rgba(15, 23, 42, 0.35);
+  will-change: transform, opacity;
 }
 
 .lp-about-photo img {
   width: 100%;
-  height: 115%;
+  height: 100%;
   object-fit: cover;
 }
 
-.lp-about-lead {
-  margin-bottom: 28px;
-  font-size: clamp(19px, 1.8vw, 23px);
-  line-height: 1.55;
-  letter-spacing: -0.015em;
-  color: var(--lp-ink);
+.lp-about-photo--main {
+  top: 0;
+  left: 0;
+  width: 72%;
+  aspect-ratio: 4 / 3;
+  z-index: 1;
 }
 
-.lp-about-text {
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--lp-muted);
+.lp-about-photo--side {
+  top: 22%;
+  right: 0;
+  width: 40%;
+  aspect-ratio: 3 / 4;
+  z-index: 2;
+}
+
+.lp-about-photo--foot {
+  bottom: 0;
+  left: 14%;
+  width: 46%;
+  aspect-ratio: 4 / 3;
+  z-index: 3;
+}
+
+/* Copy lights up word by word as it scrolls through the view (--lit set in AboutSection.jsx); the long
+   transition keeps it unhurried, and it dims again on the way back up. */
+.lp-lit {
+  --lit: 0;
+}
+
+.lp-lit-w {
+  opacity: clamp(0.16, calc(var(--lit) - var(--i)), 1);
+  transition: opacity 0.9s ease-out;
 }
 
 /* ---------- Services ---------- */
@@ -704,21 +740,28 @@
     padding-top: 48px;
   }
 
-  .lp-stats {
-    grid-template-columns: 1fr 1fr;
+  /* Stacked layout: keep the skyline behind the headline, not under the globe below it. */
+  .lp-skyline {
+    top: 60px;
+    bottom: auto;
+    width: 100%;
+    height: 520px;
   }
 
-  .lp-stat--lead {
-    grid-column: 1 / -1;
-    grid-row: auto;
+  .lp-kpis {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .lp-masonry {
-    columns: 2;
+  .lp-kpi:nth-child(4) {
+    border-left: 0;
   }
 
-  .lp-about-aside {
-    position: static;
+  .lp-kpi:nth-child(n + 4) {
+    border-top: 1px solid var(--lp-line);
+  }
+
+  .lp.lp-stack > section {
+    padding-bottom: 72px;
   }
 }
 
@@ -727,42 +770,33 @@
     height: 360px;
   }
 
-  .lp-stats {
-    gap: 10px;
-    grid-auto-rows: minmax(150px, auto);
+  .lp-kpis {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .lp-stat {
-    padding: 18px;
-    border-radius: 20px;
+  .lp-kpi {
+    padding: 22px 16px 24px;
   }
 
-  .lp-stat-icon {
-    top: 16px;
-    left: 16px;
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
+  .lp-kpi:first-child {
+    grid-column: 1 / -1;
   }
 
-  .lp-stat-label {
-    font-size: 13px;
+  .lp-kpi:nth-child(n) {
+    border-left: 0;
+    border-top: 1px solid var(--lp-line);
   }
 
-  .lp-stat--lead {
-    padding: 24px;
+  .lp-kpi:first-child {
+    border-top: 0;
   }
 
-  .lp-stat--lead .lp-stat-value {
-    margin-top: 28px;
+  .lp-kpi:nth-child(odd):not(:first-child) {
+    border-left: 1px solid var(--lp-line);
   }
 
-  .lp-timeline-mark:nth-child(odd):not(.is-now) {
-    visibility: hidden;
-  }
-
-  .lp-masonry {
-    columns: 1;
+  .lp-kpi-value {
+    margin-top: 12px;
   }
 
   .lp-carousel-nav {
@@ -771,62 +805,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-stage,
-  .lp-card-enter {
+  .hero-stage {
     animation: none;
-  }
-}
-
-/* ---------- Hero scroll exit (driven by --hero-out from HeroSection) ---------- */
-.lp-hero {
-  --hero-out: 0;
-}
-
-.lp-hero-copy {
-  opacity: calc(1 - var(--hero-out) * 1.1);
-  transform: translate3d(0, calc(var(--hero-out) * -80px), 0);
-  filter: blur(calc(var(--hero-out) * 6px));
-}
-
-.lp-hero .lp-orbit-canvas,
-.lp-hero .lp-orbit-hint {
-  opacity: calc(1 - var(--hero-out) * 1.2);
-}
-
-.lp-hero .lp-orbit {
-  transform: translate3d(0, calc(var(--hero-out) * 60px), 0) scale(calc(1 - var(--hero-out) * 0.08));
-}
-
-/* ---------- Hero → portfolio flight (driven by PortfolioFlight) ---------- */
-.lp-flight {
-  position: fixed;
-  inset: 0;
-  z-index: 990;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.lp-flyer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  opacity: 0;
-  border-radius: 14px;
-  background: var(--lp-surface);
-  transform-origin: 50% 50%;
-  will-change: transform, opacity, width, height;
-}
-
-.lp-flyer img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lp-flight {
-    display: none;
   }
 }

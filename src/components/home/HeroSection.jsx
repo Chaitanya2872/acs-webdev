@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { heroNews } from '../../data/home';
 import { company } from '../../data/site';
 import { paths } from '../../routes/paths';
+import HeroSkyline from './HeroSkyline';
 import PortfolioOrbit from './PortfolioOrbit';
 
 const NEWS_INTERVAL_MS = 4500;
@@ -31,54 +32,32 @@ function Announcement() {
 }
 
 export default function HeroSection() {
-  const ref = useRef(null);
-
-  // Scroll-linked exit: --hero-out runs 0 → 1 over the hero's height and drives the fade/lift in CSS.
-  useEffect(() => {
-    const hero = ref.current;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
-    let frame = null;
-    const update = () => {
-      frame = null;
-      const out = Math.min(1, Math.max(0, window.scrollY / (hero.offsetHeight * 0.9)));
-      hero.style.setProperty('--hero-out', out.toFixed(3));
-    };
-    const schedule = () => {
-      if (frame === null) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', schedule, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', schedule);
-      if (frame !== null) cancelAnimationFrame(frame);
-    };
-  }, []);
-
   return (
-    <section className="lp-hero" ref={ref}>
+    <section className="lp-hero">
+      <HeroSkyline />
       <div className="container">
         <div className="row align-items-center gy-5">
           <div className="col-lg-5 lp-hero-copy">
-            <div className="hero-stage" style={{ '--stage': 0 }}>
-              <Announcement />
-            </div>
-            <h1 className="hero-stage" style={{ '--stage': 1 }}>
+            <h1 className="hero-stage" style={{ '--stage': 0 }}>
               Explore.
               <br />
               Innovate.
               <br />
               <span>Excel.</span>
             </h1>
-            <p className="lp-hero-lead hero-stage" style={{ '--stage': 2 }}>
+            <p className="lp-hero-lead hero-stage" style={{ '--stage': 1 }}>
               Four decades of AI, software, smart facilities and IT infrastructure for government, defence and enterprise.
             </p>
-            <div className="lp-actions hero-stage" style={{ '--stage': 3 }}>
+            <div className="lp-actions hero-stage" style={{ '--stage': 2 }}>
               <a href="#portfolios" className="lp-btn lp-btn--dark">
                 Explore portfolios
               </a>
               <Link to={paths.contact} className="lp-btn lp-btn--light">
                 Talk to us
               </Link>
+            </div>
+            <div className="lp-hero-announce hero-stage" style={{ '--stage': 3 }}>
+              <Announcement />
             </div>
             <ul className="lp-hero-meta hero-stage" style={{ '--stage': 4 }}>
               <li>Since 1980</li>
