@@ -17,7 +17,8 @@
 
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   color: var(--lp-text);
-  background: #ffffff;
+  /* See-through, so the site's grid backdrop (components/ui/GridBackground) shows behind the page. */
+  background: transparent;
   -webkit-font-smoothing: antialiased;
 }
 

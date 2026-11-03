@@ -19,9 +19,29 @@
   box-shadow: none;
 }
 
+/* Once the page scrolls, a frosted white bar keeps the menu readable over the content beneath. It's
+   painted on a pseudo-element: a backdrop-filter on the header itself would trap the fixed-position
+   mobile drawer inside the bar. */
+.header--plain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 1px 0 rgba(15, 15, 20, 0.06);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
 .scrolled .header--plain {
   background: transparent;
   box-shadow: none;
+}
+
+.scrolled .header--plain::before {
+  opacity: 1;
 }
 
 .header--plain .header-bar {
@@ -90,9 +110,19 @@
     color: var(--plain-ink);
   }
 
-  .header--plain .navmenu .toggle-dropdown {
-    font-size: 11px;
-    opacity: 0.6;
+  /* An invisible bridge over the gap above each panel, so the pointer can travel into it without the
+     hover (and the panel) dropping. */
+  .header--plain .navmenu .dropdown > ul::before {
+    content: '';
+    position: absolute;
+    inset: -12px 0 auto;
+    height: 12px;
+  }
+
+  .header--plain .navmenu .dropdown .dropdown > ul::before {
+    inset: 0 -12px 0 auto;
+    width: 12px;
+    height: auto;
   }
 
   .header--plain .navmenu a::after {
@@ -154,7 +184,10 @@
     border-radius: 24px;
   }
 
+  /* Stretch, not centre: alignment applies to the fixed drawer too and would shrink it to nothing. */
   .mobile-nav-active .header--plain .navmenu {
+    justify-self: stretch;
+    align-self: stretch;
     background: rgba(15, 15, 20, 0.45);
   }
 
@@ -179,6 +212,11 @@
     border: 0;
     border-radius: 16px;
     background: rgba(15, 15, 20, 0.03);
+  }
+
+  /* The drawer's close button takes the Contact button's spot while it's open. */
+  .mobile-nav-active .header--plain .header-actions {
+    visibility: hidden;
   }
 
   .mobile-nav-active .header--plain .mobile-nav-toggle {

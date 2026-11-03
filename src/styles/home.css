@@ -276,22 +276,14 @@
   pointer-events: none;
 }
 
-/* ---------- Stacked sections ---------- */
-/* Each section sticks (top set by useStackedSections) and fades out as the next comes up over it; a
-   white glow above each section softens the edge it comes up with. */
-.lp.lp-stack > section {
-  position: sticky;
-  top: var(--stack-top, 0px);
-  padding-bottom: 96px;
-  background-color: #ffffff;
-}
-
-.lp.lp-stack > section + section {
-  box-shadow: 0 -56px 56px #ffffff;
-}
-
-.lp.lp-stack > section.is-covered {
-  visibility: hidden;
+/* ---------- Section motion ---------- */
+/* Each section after the hero rises, settles and fades in as it scrolls into view (--enter, 0 → 1,
+   set from the scroll by useSectionMotion). */
+.lp-motion > section + section > * {
+  opacity: calc(0.15 + 0.85 * var(--enter, 1));
+  transform: translate3d(0, calc((1 - var(--enter, 1)) * 90px), 0) scale(calc(0.94 + 0.06 * var(--enter, 1)));
+  transform-origin: 50% 0;
+  will-change: transform, opacity;
 }
 
 /* ---------- Certifications (About) ---------- */
@@ -371,95 +363,252 @@
   color: #ffffff;
 }
 
-/* ---------- About + KPIs ---------- */
-.lp.lp-stack > .lp-about {
-  padding-top: 64px;
-  overflow-x: clip;
+/* ---------- About: three chapters ---------- */
+/* Wide screens: the section is a tall scroll track; its stage pins to the screen and shows the active
+   chapter (set from scroll progress in AboutSection.jsx), cross-fading between them. */
+.lp > .lp-chapters {
+  height: calc(var(--chapters) * 80vh + 100vh);
+  padding: 0;
 }
 
-.lp-about-head {
+.lp-chapters-stage {
+  position: sticky;
+  top: 0;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  padding-bottom: 20px;
-  margin-bottom: 36px;
-  border-bottom: 1px solid var(--lp-line);
+  height: 100vh;
+  padding-top: 72px;
 }
 
-.lp-about-since {
-  display: inline-flex;
+.lp-chapters-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: clamp(32px, 5vw, 80px);
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--lp-muted);
 }
 
-.lp-about-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #0095da;
-  box-shadow: 0 0 0 4px rgba(0, 149, 218, 0.15);
+.lp-chapters-nav ol {
+  margin: 20px 0 28px;
+  padding: 0;
+  list-style: none;
 }
 
-.lp-about-lead {
-  max-width: 1120px;
-  margin: 0;
-  font-size: clamp(22px, 2.6vw, 36px);
+.lp-chapters-nav button {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  font-size: 18px;
   font-weight: 500;
-  line-height: 1.32;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: #b4bac4;
+  background: none;
+  transition: color 0.5s var(--lp-ease), transform 0.5s var(--lp-ease);
+}
+
+.lp-chapters-nav button:hover,
+.lp-chapters-nav .is-active button {
   color: var(--lp-ink);
 }
 
-/* KPI strip: five figures between hairlines, each with a blue rule that draws in on reveal. */
-.lp-kpis {
+.lp-chapters-nav .is-active button {
+  transform: translateX(8px);
+}
+
+.lp-chapters-num {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lp-chapters-nav .is-active .lp-chapters-num {
+  color: #0095da;
+}
+
+.lp-chapters-track {
+  display: block;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--lp-line);
+}
+
+.lp-chapters-track span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0095da, #5cc8f5);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+
+.lp-chapters-panels {
+  position: relative;
+  min-height: min(560px, calc(100vh - 160px));
+}
+
+.lp-chapter {
+  position: absolute;
+  inset: 0;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  margin-top: 56px;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(32px, 4vw, 64px);
+  align-items: center;
+  /* Opacity, drift and visibility are set per frame from the scroll in AboutSection.jsx. */
+  will-change: opacity, transform;
+}
+
+.lp-chapter-kicker {
+  display: block;
+  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0095da;
+}
+
+.lp-chapter-title {
+  margin: 0 0 20px;
+  font-size: clamp(36px, 4.2vw, 62px);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  color: var(--lp-ink);
+}
+
+.lp-chapter-text {
+  max-width: 440px;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--lp-muted);
+}
+
+/* Small parts of each visual (founders, practices, certificates) step in one after another. */
+.lp-chapter [style*='--k'] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.5s var(--lp-ease),
+    transform 0.6s var(--lp-ease),
+    background 0.3s,
+    box-shadow 0.3s;
+}
+
+.lp-chapter.is-active [style*='--k'] {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(0.45s + var(--k) * 70ms), calc(0.45s + var(--k) * 70ms), 0s, 0s;
+}
+
+/* Who we are: the founding photo, with the years on a card and the founders' institutions as tags. */
+.lp-chapter-photo {
+  position: relative;
+  height: min(480px, calc(100vh - 200px));
+  overflow: hidden;
+  border-radius: 28px;
+}
+
+.lp-chapter-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lp-chapter-badge {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.lp-chapter-founders {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lp-chapter-founders li {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--lp-ink);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* What we do: the nine practices as a 3x3 of tiles. */
+.lp-chapter-practices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lp-chapter-practices a {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+  padding: 18px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--lp-ink);
+  background: var(--lp-surface);
+  transition: background 0.3s, box-shadow 0.3s, transform 0.3s var(--lp-ease);
+}
+
+.lp-chapter-practices a:hover {
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--lp-line), 0 18px 32px -24px rgba(15, 23, 42, 0.35);
+  transform: translateY(-3px);
+}
+
+.lp-chapter-practices i {
+  font-size: 20px;
+  color: #0095da;
+}
+
+/* Why trust us: three figures between hairlines, then the certificates. */
+.lp-chapter-figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 28px;
   border-top: 1px solid var(--lp-line);
   border-bottom: 1px solid var(--lp-line);
 }
 
-.lp-kpi {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 28px 24px 30px;
+.lp-chapter-figures .lp-chapter-figure {
+  padding: 24px 20px;
 }
 
-.lp-kpi + .lp-kpi {
+.lp-chapter-figures .lp-chapter-figure + .lp-chapter-figure {
   border-left: 1px solid var(--lp-line);
 }
 
-.lp-kpi::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #0095da, #5cc8f5);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 1.4s var(--lp-ease) 0.2s;
+.lp-chapter-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.lp-kpi.aos-animate::before {
-  transform: none;
-}
-
-.lp-kpi-icon {
-  font-size: 18px;
-  color: #0095da;
-}
-
-.lp-kpi-value {
-  margin-top: 18px;
-  font-size: clamp(40px, 4.4vw, 64px);
+.lp-chapter-figure-value {
+  font-size: clamp(40px, 4vw, 60px);
   font-weight: 600;
   letter-spacing: -0.05em;
   line-height: 1;
@@ -467,7 +616,14 @@
   font-variant-numeric: tabular-nums;
 }
 
-.lp-kpi-value sup {
+.lp-chapter-figure-value--text {
+  white-space: nowrap;
+  font-size: clamp(22px, 2vw, 30px);
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.lp-chapter-figure-value sup {
   top: -0.9em;
   margin-left: 2px;
   font-size: 0.4em;
@@ -476,154 +632,146 @@
   color: #0095da;
 }
 
-.lp-kpi-label {
-  font-size: 14px;
-  line-height: 1.4;
+.lp-chapter-figure-label {
+  font-size: 13px;
   color: var(--lp-muted);
 }
 
-.lp-about-detail {
-  margin-top: 64px;
-}
-
-.lp-about-year {
-  display: block;
-  margin-bottom: 12px;
-  font-size: clamp(64px, 8vw, 112px);
-  font-weight: 600;
-  letter-spacing: -0.06em;
-  line-height: 0.9;
-  color: transparent;
-  -webkit-text-stroke: 1px #c9d3e0;
-}
-
-.lp-about-text {
-  font-size: 17px;
-  line-height: 1.75;
-  color: var(--lp-text);
-}
-
-/* The photos fly in from the bottom right (scroll-linked, transforms set in AboutSection.jsx). */
-.lp-about-collage {
-  position: relative;
-  max-width: 520px;
-  aspect-ratio: 1 / 0.92;
-}
-
-.lp-about-photo {
-  position: absolute;
-  margin: 0;
-  overflow: hidden;
-  border-radius: var(--lp-radius);
-  border: 1px solid var(--lp-line);
-  background: #f3f5f8;
-  box-shadow: 0 18px 40px -24px rgba(15, 23, 42, 0.35);
-  will-change: transform, opacity;
-}
-
-.lp-about-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.lp-about-photo--main {
-  top: 0;
-  left: 0;
-  width: 72%;
-  aspect-ratio: 4 / 3;
-  z-index: 1;
-}
-
-.lp-about-photo--side {
-  top: 22%;
-  right: 0;
-  width: 40%;
-  aspect-ratio: 3 / 4;
-  z-index: 2;
-}
-
-.lp-about-photo--foot {
-  bottom: 0;
-  left: 14%;
-  width: 46%;
-  aspect-ratio: 4 / 3;
-  z-index: 3;
-}
-
-/* Copy lights up word by word as it scrolls through the view (--lit set in AboutSection.jsx); the long
-   transition keeps it unhurried, and it dims again on the way back up. */
-.lp-lit {
-  --lit: 0;
-}
-
-.lp-lit-w {
-  opacity: clamp(0.16, calc(var(--lit) - var(--i)), 1);
-  transition: opacity 0.9s ease-out;
+.lp-chapter-proof .lp-certs {
+  margin-top: 0;
 }
 
 /* ---------- Services ---------- */
-.lp-service {
-  position: relative;
+/* A numbered list between hairlines beside one photo that cross-fades to the hovered service. */
+.lp-services-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+
+.lp-services-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--lp-line);
+}
+
+.lp-services-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 40px;
+  gap: 16px;
+  align-items: start;
+  padding: 28px 0;
+  border-top: 1px solid var(--lp-line);
+  color: inherit;
+}
+
+.lp-services-thumb {
+  display: none;
+}
+
+.lp-services-num {
+  padding-top: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #b4bac4;
+  transition: color 0.4s var(--lp-ease);
+}
+
+.lp-services-body {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  padding: 12px 12px 56px;
-  border-radius: calc(var(--lp-radius) + 4px);
-  background: var(--lp-surface);
-  transition: background 0.25s;
+  gap: 6px;
 }
 
-.lp-service:hover {
-  background: #ececee;
+.lp-services-tag {
+  font-size: 12px;
+  font-weight: 500;
+  color: #0095da;
 }
 
-.lp-service-media {
-  aspect-ratio: 16 / 10;
+.lp-services-title {
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: #b4bac4;
+  transition: color 0.4s var(--lp-ease);
+}
+
+.lp-services-text {
+  max-width: 460px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--lp-muted);
+}
+
+.lp-services-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--lp-line);
+  border-radius: 50%;
+  font-size: 15px;
+  color: var(--lp-ink);
+  transition: color 0.4s, background 0.4s, border-color 0.4s, transform 0.5s var(--lp-ease);
+}
+
+.lp-services-row.is-active .lp-services-num {
+  color: #0095da;
+}
+
+.lp-services-row.is-active .lp-services-title {
+  color: var(--lp-ink);
+}
+
+.lp-services-row.is-active .lp-services-arrow {
+  border-color: #0095da;
+  color: #ffffff;
+  background: #0095da;
+  transform: rotate(45deg);
+}
+
+.lp-services-media {
+  position: relative;
+  aspect-ratio: 4 / 3.6;
   overflow: hidden;
-  border-radius: var(--lp-radius);
-  margin-bottom: 18px;
+  border-radius: 28px;
+  background: var(--lp-surface);
 }
 
-.lp-service-media img {
+.lp-services-media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s var(--lp-ease);
+  opacity: 0;
+  transform: scale(1.06);
+  transition: opacity 0.7s var(--lp-ease), transform 1.2s var(--lp-ease);
 }
 
-.lp-service:hover .lp-service-media img {
-  transform: scale(1.04);
+.lp-services-media img.is-active {
+  opacity: 1;
+  transform: none;
 }
 
-
-.lp-service h3 {
-  margin: 0 8px 8px;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-
-.lp-service p {
-  display: -webkit-box;
-  margin: 0 8px;
-  overflow: hidden;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--lp-muted);
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-}
-
-.lp-service .lp-arrow {
-  right: 20px;
-  bottom: 18px;
+.lp-services-caption {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--lp-ink);
-  background: #ffffff;
-}
-
-.lp-service:hover .lp-arrow {
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* ---------- Testimonials ---------- */
@@ -662,29 +810,57 @@
   color: var(--lp-muted);
 }
 
-/* ---------- Clients carousel ---------- */
-.lp-carousel-nav {
+/* ---------- Clients marquee ---------- */
+/* Two rows on a framed panel with its own grid backdrop (GridBackground, isolated so it stays inside). */
+.lp-clients-panel {
+  position: relative;
+  isolation: isolate;
   display: flex;
-  gap: 6px;
-}
-
-.lp-carousel-nav button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(28px, 4vw, 48px) 0;
+  overflow: hidden;
   border: 1px solid var(--lp-line);
-  border-radius: 50%;
-  color: var(--lp-ink);
-  background: #ffffff;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  border-radius: 28px;
 }
 
-.lp-carousel-nav button:hover {
-  color: #ffffff;
-  border-color: var(--lp-ink);
-  background: var(--lp-ink);
+.lp-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.lp-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: lp-marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.lp-marquee:hover .lp-marquee-track {
+  animation-play-state: paused;
+}
+
+.lp-marquee--reverse .lp-marquee-track {
+  animation-direction: reverse;
+}
+
+.lp-marquee-list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Spacing as a margin on every item (not a gap), so one copy is exactly half the track. */
+.lp-marquee-list li {
+  width: clamp(160px, 16vw, 230px);
+  margin-right: 16px;
+}
+
+@keyframes lp-marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .lp-client {
@@ -697,13 +873,15 @@
   justify-content: center;
   aspect-ratio: 4 / 3;
   padding: 24px;
+  border: 1px solid var(--lp-line);
   border-radius: var(--lp-radius);
-  background: var(--lp-surface);
-  transition: background 0.25s;
+  background: #ffffff;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .lp-client:hover .lp-client-logo {
-  background: #ececee;
+  border-color: rgba(0, 149, 218, 0.35);
+  box-shadow: 0 18px 32px -24px rgba(15, 23, 42, 0.35);
 }
 
 .lp-client-logo img {
@@ -725,11 +903,6 @@
   color: var(--lp-ink);
 }
 
-/* ---------- Call to action ---------- */
-.lp-cta-section {
-  padding-bottom: 0;
-}
-
 /* ---------- Responsive ---------- */
 @media (max-width: 991px) {
   .lp-section {
@@ -748,21 +921,81 @@
     height: 520px;
   }
 
-  .lp-kpis {
-    grid-template-columns: repeat(3, 1fr);
+  /* About: no pinning; the three chapters simply stack. */
+  .lp > .lp-chapters {
+    height: auto;
+    padding: 72px 0 24px;
   }
 
-  .lp-kpi:nth-child(4) {
-    border-left: 0;
+  .lp-chapters-stage {
+    position: static;
+    display: block;
+    height: auto;
+    padding-top: 0;
   }
 
-  .lp-kpi:nth-child(n + 4) {
-    border-top: 1px solid var(--lp-line);
+  .lp-chapters-grid {
+    grid-template-columns: 1fr;
   }
 
-  .lp.lp-stack > section {
-    padding-bottom: 72px;
+  .lp-chapters-nav ol,
+  .lp-chapters-track {
+    display: none;
   }
+
+  .lp-chapters-panels {
+    min-height: 0;
+  }
+
+  .lp-chapter,
+  .lp-chapter.is-active {
+    position: static;
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .lp-chapter [style*='--k'] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lp-chapter-photo {
+    height: 380px;
+  }
+
+  .lp-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lp-services-media {
+    display: none;
+  }
+
+  .lp-services-row {
+    grid-template-columns: 36px 1fr 40px;
+  }
+
+  .lp-services-thumb {
+    display: block;
+    grid-column: 1 / -1;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 20px;
+  }
+
+  .lp-services-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .lp-services-title {
+    color: var(--lp-ink);
+  }
+
 }
 
 @media (max-width: 575px) {
@@ -770,42 +1003,44 @@
     height: 360px;
   }
 
-  .lp-kpis {
+  .lp-chapter-practices {
     grid-template-columns: 1fr 1fr;
   }
 
-  .lp-kpi {
-    padding: 22px 16px 24px;
+  .lp-chapter-figures .lp-chapter-figure {
+    padding: 18px 12px;
   }
 
-  .lp-kpi:first-child {
-    grid-column: 1 / -1;
+  .lp-chapter-figure-value {
+    font-size: 34px;
   }
 
-  .lp-kpi:nth-child(n) {
-    border-left: 0;
-    border-top: 1px solid var(--lp-line);
-  }
-
-  .lp-kpi:first-child {
-    border-top: 0;
-  }
-
-  .lp-kpi:nth-child(odd):not(:first-child) {
-    border-left: 1px solid var(--lp-line);
-  }
-
-  .lp-kpi-value {
-    margin-top: 12px;
-  }
-
-  .lp-carousel-nav {
-    display: none;
+  .lp-chapter-figure-value--text {
+    font-size: 20px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-stage {
     animation: none;
+  }
+
+  /* No drifting: one copy of the logos as a row that scrolls by hand. */
+  .lp-marquee {
+    overflow-x: auto;
+  }
+
+  .lp-marquee-track {
+    animation: none;
+  }
+
+  .lp-marquee-list[aria-hidden],
+  .lp-marquee--reverse {
+    display: none;
+  }
+
+  .lp-chapter,
+  .lp-chapter [style*='--k'] {
+    transition: none;
   }
 }

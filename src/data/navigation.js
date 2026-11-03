@@ -13,8 +13,8 @@ export const portfolioLinks = [
   { label: 'Managed Services', to: paths.portfolio('managed-services'), icon: 'bi-headset' },
 ];
 
-// Centre of the header: kept to four entries. Home is the logo, Contact is the header's own button,
-// and Team / Newsletters live in the footer's Company column.
+// Centre of the header: kept to five entries. Home is the logo, Contact is the header's own button,
+// and Newsletters live in the footer's Company column.
 export const mainNav = [
   { label: 'Portfolios', children: portfolioLinks },
   {
@@ -42,6 +42,7 @@ export const mainNav = [
     ],
   },
   { label: 'Clients', to: paths.clients },
+  { label: 'Our Team', to: paths.team },
   {
     label: 'Investors',
     children: [
@@ -84,7 +85,7 @@ export const footerServiceLinks = [
 
 export const footerCompanyLinks = [
   { label: 'Clients', to: paths.clients },
-  { label: 'Team', to: paths.team },
+  { label: 'Our Team', to: paths.team },
   { label: 'Newsletters', to: paths.documents('newsletters') },
   { label: 'Contact', to: paths.contact },
 ];

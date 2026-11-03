@@ -1,19 +1,30 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import SplitText from '../components/common/SplitText';
 import HomeHeading from '../components/home/HomeHeading';
+import TeamLanyardRail from '../components/ui/TeamLanyardRail';
 import { coreTeam, executiveTeam } from '../data/team';
 import useDocumentTitle from '../hooks/useDocumentTitle';
 import { paths } from '../routes/paths';
 import '../styles/team.css';
 
 const isIndependent = (member) => /independent/i.test(member.designation);
-const FILTERS = [
-  { key: 'all', label: 'All', test: () => true },
-  { key: 'leadership', label: 'Leadership', test: (member) => !isIndependent(member) },
-  { key: 'independent', label: 'Independent Directors', test: isIndependent },
-];
+const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+// The bio's opening sentence, for the back of a badge.
+const firstSentence = (text) => (text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text).trim();
+
+// Badges for the executive team: LinkedIn on the back.
+const executiveBadges = executiveTeam.map((member, i) => ({
+  id: slug(member.name),
+  name: member.name,
+  role: member.designation,
+  team: 'ACS · Executive',
+  image: member.image,
+  tone: i % 2 ? 3 : 1,
+  tags: ['Executive team'],
+  links: member.linkedin ? [{ label: 'LinkedIn', href: member.linkedin }] : [],
+}));
 
 // Full-bio profile in a native <dialog>: focus is trapped, Esc closes, arrow keys step through people.
 function ProfileDialog({ members, index, onClose, onStep }) {
@@ -94,13 +105,29 @@ function ProfileDialog({ members, index, onClose, onStep }) {
 
 export default function TeamPage() {
   useDocumentTitle('Team');
-  const [filter, setFilter] = useState('all');
   const [open, setOpen] = useState(null);
 
-  const members = coreTeam.filter(FILTERS.find((f) => f.key === filter).test);
+  const members = coreTeam;
   const count = members.length;
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((dir) => setOpen((i) => (i === null ? i : (i + dir + count) % count)), [count]);
+
+  // Badges for the board: the bio's first line on the back, and a button that opens the full profile.
+  const boardBadges = useMemo(
+    () =>
+      coreTeam.map((member, i) => ({
+        id: slug(member.name),
+        name: member.name,
+        role: member.designation,
+        team: isIndependent(member) ? 'ACS · Independent' : 'ACS · Board',
+        image: member.image,
+        tone: isIndependent(member) ? 2 : 1,
+        bio: firstSentence(member.bio[0]),
+        tags: [isIndependent(member) ? 'Independent' : 'Leadership'],
+        links: [{ label: 'Full profile', onClick: () => setOpen(i) }],
+      })),
+    [],
+  );
 
   return (
     <div className="lp tm">
@@ -143,68 +170,22 @@ export default function TeamPage() {
       {/* ---- Board & leadership ---- */}
       <section className="lp-section">
         <div className="container">
-          <HomeHeading title="Board & leadership" text="Select a profile to read the full story." />
-          <div className="lp-chips" role="tablist" aria-label="Filter team" data-aos="fade-up">
-            {FILTERS.map((f) => (
-              <button
-                key={f.key}
-                type="button"
-                role="tab"
-                aria-selected={filter === f.key}
-                className={`lp-chip${filter === f.key ? ' is-active' : ''}`}
-                onClick={() => setFilter(f.key)}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="tm-grid" key={filter}>
-            {members.map((member, i) => (
-              <button key={member.name} type="button" className="tm-card" style={{ '--i': i }} onClick={() => setOpen(i)}>
-                <div className="tm-card-photo">
-                  <img src={member.image} alt="" loading="lazy" />
-                  <span className="tm-card-cta">
-                    Read profile <i className="bi bi-arrow-up-right" />
-                  </span>
-                </div>
-                <span className="tm-card-name">{member.name}</span>
-                <span className="tm-card-role">{member.designation}</span>
-              </button>
-            ))}
-          </div>
+          <HomeHeading title="Board & leadership" text="Brush along the rail to meet someone; click a badge to flip it." />
         </div>
+        <TeamLanyardRail
+          items={boardBadges}
+          className="tm-rail"
+          caption="Hover the rail to bring a badge forward, pull one down, click to flip it."
+          autoplay
+        />
       </section>
 
       {/* ---- Executive team ---- */}
       <section className="lp-section">
         <div className="container">
           <HomeHeading title="Executive team" text="Leading delivery across every practice." />
-          <div className="row g-3">
-            {executiveTeam.map((member, i) => (
-              <div key={member.name} className="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay={(i % 3) * 80}>
-                <div className="tm-exec">
-                  <img src={member.image} alt={member.name} loading="lazy" />
-                  <div className="tm-exec-body">
-                    <span className="tm-exec-name">{member.name}</span>
-                    <span className="tm-exec-role">{member.designation}</span>
-                  </div>
-                  {member.linkedin && (
-                    <a
-                      href={member.linkedin}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="tm-icon-btn tm-exec-link"
-                      aria-label={`${member.name} on LinkedIn`}
-                    >
-                      <i className="bi bi-linkedin" />
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
+        <TeamLanyardRail items={executiveBadges} className="tm-rail" caption="Flip a badge for their LinkedIn." />
       </section>
 
       {/* ---- CTA ---- */}

@@ -4,21 +4,24 @@ import { Outlet, useLocation } from 'react-router-dom';
 import useParallax from '../../hooks/useParallax';
 import useReveal from '../../hooks/useReveal';
 import useScrollY from '../../hooks/useScrollY';
+import useSmoothScroll, { scrollToElement, scrollToY } from '../../hooks/useSmoothScroll';
+import GridBackground from '../ui/GridBackground';
 import Footer from './Footer';
 import Header from './Header';
 
 export default function Layout() {
   const { pathname, hash } = useLocation();
   const scrollY = useScrollY();
+  useSmoothScroll();
   useReveal();
   useParallax();
 
   // Start each new page at the top, or at the #section it links to.
   useEffect(() => {
     if (hash) {
-      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      scrollToElement(document.getElementById(hash.slice(1)));
     } else {
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      scrollToY(0, { immediate: true });
     }
   }, [pathname, hash]);
 
@@ -31,6 +34,7 @@ export default function Layout() {
 
   return (
     <>
+      <GridBackground fixed />
       <div id="acs-scroll-progress" style={{ width: `${progress}%` }} />
       <Header />
       <main className="main">
@@ -47,7 +51,7 @@ export default function Layout() {
         aria-label="Back to top"
         onClick={(e) => {
           e.preventDefault();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          scrollToY(0);
         }}
       >
         <i className="bi bi-arrow-up-short" />

@@ -1,17 +1,17 @@
 import { Link } from 'react-router-dom';
 
 import { footerCompanyLinks, footerInvestorLinks, footerServiceLinks } from '../../data/navigation';
-import { company, offices, socialLinks } from '../../data/site';
+import { company, socialLinks } from '../../data/site';
 import { paths } from '../../routes/paths';
 import Logo from '../common/Logo';
+import SplitText from '../common/SplitText';
 import NewsletterForm from './NewsletterForm';
 
-const headOffice = offices[0];
 const followLinks = socialLinks.filter((link) => link.href !== '#');
 
 function LinkColumn({ title, links }) {
   return (
-    <div className="col-6 col-md-3">
+    <div className="ft-col">
       <h6>{title}</h6>
       <ul>
         {links.map((link) => (
@@ -24,91 +24,35 @@ function LinkColumn({ title, links }) {
   );
 }
 
-function ContactCard({ icon, label, children, href, external }) {
-  const body = (
-    <>
-      <span className="ft-card-icon">
-        <i className={`bi ${icon}`} />
-      </span>
-      <span className="ft-card-label">{label}</span>
-      <span className="ft-card-value">{children}</span>
-      {href && (
-        <span className="ft-card-arrow" aria-hidden="true">
-          <i className="bi bi-arrow-up-right" />
-        </span>
-      )}
-    </>
-  );
-
-  if (!href) return <div className="ft-card">{body}</div>;
-  return (
-    <a className="ft-card" href={href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-      {body}
-    </a>
-  );
-}
-
+// A plain footer: an invitation to get in touch, then the company and its contacts beside three link columns, one line of small print,
+// then a closing "Thank you. Stay connected." whose words rise into place as it scrolls into view.
 export default function Footer() {
   return (
     <footer className="footer ft">
       <div className="container">
-        <div className="row g-3 ft-top">
-          <div className="col-lg-5">
+        <div className="ft-lead">
+          <h2>
+            Let&apos;s build what&apos;s next, <span>together.</span>
+          </h2>
+          <Link to={paths.contact} className="ft-lead-cta">
+            Start a conversation <i className="bi bi-arrow-right" />
+          </Link>
+        </div>
+
+        <div className="ft-main">
+          <div className="ft-brand">
+            <Logo width={48} />
+            <p>{company.tagline}</p>
+            <a href={`mailto:${company.email}`}>{company.email}</a>
+            <a href={company.phone.href}>{company.phone.display}</a>
             <div className="ft-newsletter">
-              <span className="ft-eyebrow">Newsletter</span>
-              <h4>
-                Stay in the loop.
-                <br />
-                <span>News from ACS, once in a while.</span>
-              </h4>
-              <p>Product launches, project milestones and investor updates. No spam, unsubscribe anytime.</p>
+              <span>Newsletter</span>
               <NewsletterForm />
             </div>
           </div>
-
-          <div className="col-lg-7">
-            <div className="ft-cards">
-              <ContactCard icon="bi-envelope" label="Email us" href={`mailto:${company.email}`}>
-                {company.email}
-              </ContactCard>
-              <ContactCard icon="bi-telephone" label="Call us" href={company.phone.href}>
-                {company.phone.display}
-              </ContactCard>
-              <ContactCard icon="bi-geo-alt" label={`${headOffice.group}, ${headOffice.city}`} href={headOffice.mapUrl} external>
-                {headOffice.address}
-              </ContactCard>
-              <div className="ft-card">
-                <span className="ft-card-icon">
-                  <i className="bi bi-people" />
-                </span>
-                <span className="ft-card-label">Follow us</span>
-                <span className="ft-socials">
-                  {followLinks.map((link) => (
-                    <a key={link.label} href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} title={link.label}>
-                      <i className={`bi ${link.icon}`} />
-                    </a>
-                  ))}
-                </span>
-                <Link to={paths.contact} className="ft-card-link">
-                  All offices <i className="bi bi-arrow-right" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row gy-4 ft-sitemap">
-          <div className="col-md-3">
-            <Logo width={52} />
-            <h5>{company.name}</h5>
-            <p>{company.tagline}</p>
-            <a href={company.iotiqUrl} target="_blank" rel="noreferrer" className="ft-iotiq">
-              Visit IOTIQ <i className="bi bi-arrow-up-right" />
-            </a>
-          </div>
-          <LinkColumn title="Services" links={footerServiceLinks} />
-          <LinkColumn title="Investors" links={footerInvestorLinks} />
-          <LinkColumn title="Company" links={footerCompanyLinks} />
+          <LinkColumn title="What we build" links={footerServiceLinks} />
+          <LinkColumn title="For investors" links={footerInvestorLinks} />
+          <LinkColumn title="Get to know us" links={footerCompanyLinks} />
         </div>
 
         <div className="ft-bottom">
@@ -118,7 +62,26 @@ export default function Footer() {
           <span>
             BSE {company.bseScripCode} · NSE {company.nseSymbol}
           </span>
+          <span className="ft-socials">
+            {followLinks.map((link) => (
+              <a key={link.label} href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} title={link.label}>
+                <i className={`bi ${link.icon}`} />
+              </a>
+            ))}
+            <a href={company.iotiqUrl} target="_blank" rel="noreferrer">
+              IOTIQ <i className="bi bi-arrow-up-right" />
+            </a>
+          </span>
         </div>
+
+        <p className="ft-thanks" data-aos="split">
+          <span className="ft-thanks-line">
+            <SplitText text="Thank you." />
+          </span>
+          <span className="ft-thanks-line ft-thanks-line--accent">
+            <SplitText text="Stay connected." start={2} />
+          </span>
+        </p>
       </div>
     </footer>
   );

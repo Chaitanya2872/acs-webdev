@@ -8,6 +8,7 @@ import { portfolioLinks } from '../data/navigation';
 import { portfolios } from '../data/portfolios';
 import useDocumentTitle from '../hooks/useDocumentTitle';
 import useScrollSpy from '../hooks/useScrollSpy';
+import { scrollToElement } from '../hooks/useSmoothScroll';
 import { paths } from '../routes/paths';
 import NotFoundPage from './NotFoundPage';
 import '../styles/portfolio.css';
@@ -16,10 +17,10 @@ const pad = (n) => String(n).padStart(2, '0');
 const YEARS = new Date().getFullYear() - 1980;
 const iconFor = (slug) => portfolioLinks.find((link) => link.to === paths.portfolio(slug))?.icon ?? 'bi-grid';
 
-// Smooth-scrolls to an in-page section without touching the router (the sticky offset comes from scroll-margin).
+// Smooth-scrolls to an in-page section without touching the router (the header offset comes from scroll-margin).
 const jumpTo = (e, id) => {
   e.preventDefault();
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  scrollToElement(document.getElementById(id));
 };
 
 // Moves a soft highlight under the pointer across a capability card.

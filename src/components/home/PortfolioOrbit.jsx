@@ -111,8 +111,7 @@ export default function PortfolioOrbit() {
       }
       motion.spin += SPIN_SPEED * dt;
 
-      // Under a stacked section (see useStackedSections) there's nothing to see; keep time, skip the draw.
-      if (!stage.closest('.is-covered')) render();
+      render();
       frame = requestAnimationFrame(tick);
     };
 

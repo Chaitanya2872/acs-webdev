@@ -18,23 +18,20 @@ function NavItem({ item, onNavigate }) {
     );
   }
 
-  // Desktop dropdowns open on hover via CSS; the chevron toggles them on mobile.
+  // No chevrons: desktop dropdowns open on hover via CSS, and on mobile tapping the label toggles them.
   return (
     <li className="dropdown">
       <a
         href="#"
         className={containsPath(item, pathname) || open ? 'active' : undefined}
-        onClick={(e) => e.preventDefault()}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen((value) => !value);
+        }}
       >
-        <span>{item.label}</span>{' '}
-        <i
-          className="bi bi-chevron-down toggle-dropdown"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setOpen((value) => !value);
-          }}
-        />
+        <span>{item.label}</span>
       </a>
       <ul className={open ? 'dropdown-active' : undefined} style={item.alignLeft ? { left: '-90%' } : undefined}>
         {item.children.map((child) => (

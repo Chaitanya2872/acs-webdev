@@ -1,22 +1,43 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Autoplay } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
 
 import { clientLogos } from '../../data/home';
 import { paths } from '../../routes/paths';
+import GridBackground from '../ui/GridBackground';
 import HomeHeading from './HomeHeading';
 
-const breakpoints = {
-  0: { slidesPerView: 2.2, spaceBetween: 12 },
-  576: { slidesPerView: 3.2, spaceBetween: 12 },
-  992: { slidesPerView: 5, spaceBetween: 16 },
-};
+function ClientList({ clients, hidden }) {
+  return (
+    <ul className="lp-marquee-list" aria-hidden={hidden || undefined}>
+      {clients.map((client) => (
+        <li key={client.name}>
+          <figure className="lp-client">
+            <div className="lp-client-logo">
+              {/* Not lazy: off to the side in a clipped, moving track, lazy logos can be late to load. */}
+              <img src={client.image} alt={hidden ? '' : client.name} />
+            </div>
+            <figcaption>{client.name}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
+// One endless row: the list is rendered twice and the track slides by exactly one copy, then repeats.
+function Marquee({ clients, reverse, hidden }) {
+  return (
+    <div className={`lp-marquee${reverse ? ' lp-marquee--reverse' : ''}`}>
+      <div className="lp-marquee-track" style={{ '--marquee-duration': `${clients.length * 5}s` }}>
+        <ClientList clients={clients} hidden={hidden} />
+        <ClientList clients={clients} hidden />
+      </div>
+    </div>
+  );
+}
+
+// Client logos drift past in two endless rows, one each way, on a panel ruled with the grid
+// backdrop. Hovering pauses them; reduced motion makes each a plain row that scrolls by hand.
 export default function ClientsCarousel() {
-  const [swiper, setSwiper] = useState(null);
-
   return (
     <section id="clients" className="lp-section lp-clients">
       <div className="container">
@@ -24,37 +45,13 @@ export default function ClientsCarousel() {
           <Link to={paths.clients} className="lp-link">
             All clients <i className="bi bi-arrow-right" />
           </Link>
-          <div className="lp-carousel-nav">
-            <button type="button" aria-label="Previous clients" onClick={() => swiper?.slidePrev()}>
-              <i className="bi bi-arrow-left" />
-            </button>
-            <button type="button" aria-label="Next clients" onClick={() => swiper?.slideNext()}>
-              <i className="bi bi-arrow-right" />
-            </button>
-          </div>
         </HomeHeading>
 
-        <div data-aos="fade-up">
-          <Swiper
-            modules={[Autoplay]}
-            onSwiper={setSwiper}
-            loop
-            speed={700}
-            grabCursor
-            autoplay={{ delay: 2800, disableOnInteraction: false, pauseOnMouseEnter: true }}
-            breakpoints={breakpoints}
-          >
-            {clientLogos.map((client) => (
-              <SwiperSlide key={client.name}>
-                <figure className="lp-client">
-                  <div className="lp-client-logo">
-                    <img src={client.image} alt={client.name} loading="lazy" />
-                  </div>
-                  <figcaption>{client.name}</figcaption>
-                </figure>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div className="lp-clients-panel" data-aos="fade-up">
+          <GridBackground glow="corner" />
+          <Marquee clients={clientLogos} />
+          {/* The second row repeats the same clients, so it's hidden from screen readers. */}
+          <Marquee clients={[...clientLogos].reverse()} reverse hidden />
         </div>
       </div>
     </section>

@@ -1,0 +1,795 @@
+/*--------------------------------------------------------------
+# Team lanyard rail (components/ui/TeamLanyardRail.jsx)
+# Plain-CSS port of the component's Tailwind classes. Theme tokens live on .tlr; --tlr-chart-1…5 are
+# the team colours used by the lanyard straps and badge bands (ACS blues here).
+--------------------------------------------------------------*/
+.tlr {
+  --tlr-fg: #0a0a0a;
+  --tlr-bg: #ffffff;
+  --tlr-muted: #f4f4f5;
+  --tlr-muted-fg: #8a8a8e;
+  --tlr-card: #ffffff;
+  --tlr-card-fg: #0a0a0a;
+  --tlr-border: rgba(0, 0, 0, 0.1);
+  --tlr-ring: #0095da;
+  --tlr-chart-1: #0095da;
+  --tlr-chart-2: #0b3d66;
+  --tlr-chart-3: #5cc8f5;
+  --tlr-chart-4: #334155;
+  --tlr-chart-5: #2563eb;
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow: hidden;
+  color: var(--tlr-fg);
+}
+
+.tlr-tone-1 { color: var(--tlr-chart-1); }
+.tlr-tone-2 { color: var(--tlr-chart-2); }
+.tlr-tone-3 { color: var(--tlr-chart-3); }
+.tlr-tone-4 { color: var(--tlr-chart-4); }
+.tlr-tone-5 { color: var(--tlr-chart-5); }
+
+.tlr-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.tlr-backdrop--glow {
+  background: radial-gradient(closest-side at 50% 46%, color-mix(in oklab, var(--tlr-fg) 7%, transparent), transparent);
+}
+
+.tlr-backdrop--dots {
+  background: radial-gradient(color-mix(in oklab, var(--tlr-fg) 8%, transparent) 1px, transparent 1.3px) 0 0 / 18px 18px;
+  mask-image: radial-gradient(closest-side at 50% 50%, black 55%, transparent);
+  -webkit-mask-image: radial-gradient(closest-side at 50% 50%, black 55%, transparent);
+}
+
+.tlr-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 24px 0;
+  text-align: center;
+}
+
+.tlr-eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--tlr-muted-fg);
+}
+
+.tlr-heading {
+  margin: 0;
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* ---- Stage and rail ---- */
+.tlr-stage {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+  overflow-x: clip;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.tlr-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.tlr-rail-shadow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--tlr-fg) 10%, transparent);
+  filter: blur(5px);
+}
+
+.tlr-rail-bar {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--tlr-muted-fg) 35%, white) 0%,
+    white 20%,
+    color-mix(in oklab, var(--tlr-muted-fg) 70%, white) 40%,
+    var(--tlr-muted-fg) 64%,
+    color-mix(in oklab, var(--tlr-muted-fg) 55%, black) 100%
+  );
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--tlr-fg) 18%, transparent);
+}
+
+.tlr-rail-texture {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background: repeating-linear-gradient(90deg, transparent 0 2px, color-mix(in oklab, white 40%, transparent) 2px 3px, transparent 3px 7px);
+}
+
+.tlr-cap {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 28px;
+  border-radius: 3px;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--tlr-muted-fg) 60%, white),
+    var(--tlr-muted-fg) 55%,
+    color-mix(in oklab, var(--tlr-muted-fg) 60%, black)
+  );
+  box-shadow: 0 3px 6px color-mix(in oklab, var(--tlr-fg) 18%, transparent);
+}
+
+.tlr-screw {
+  position: absolute;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--tlr-fg) 35%, transparent);
+  transform: translateX(-50%);
+}
+
+.tlr-screw--top {
+  top: 4px;
+}
+
+.tlr-screw--bottom {
+  bottom: 4px;
+}
+
+/* ---- One lanyard: ring, strap, reel, cord, clip and badge ---- */
+.tlr-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.tlr-fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.tlr-ring {
+  position: absolute;
+  display: block;
+  border-style: solid;
+  border-color: color-mix(in oklab, var(--tlr-muted-fg) 45%, white);
+  border-radius: 999px;
+  box-shadow:
+    inset 1px 0 0 color-mix(in oklab, black 25%, transparent),
+    1px 1px 2px color-mix(in oklab, black 20%, transparent);
+}
+
+.tlr-strap-shadow {
+  position: absolute;
+  display: block;
+  background: rgba(0, 0, 0, 0.15);
+  filter: blur(2px);
+}
+
+.tlr-strap {
+  position: absolute;
+  display: block;
+  background:
+    repeating-linear-gradient(135deg, color-mix(in oklab, white 16%, transparent) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(45deg, color-mix(in oklab, black 13%, transparent) 0 1px, transparent 1px 3px),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, currentColor 68%, black) 0%,
+      currentColor 16%,
+      color-mix(in oklab, currentColor 86%, white) 48%,
+      currentColor 80%,
+      color-mix(in oklab, currentColor 66%, black) 100%
+    );
+}
+
+.tlr-strap-stitch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.5px;
+  right: 1.5px;
+  display: block;
+  border-left: 1px dashed rgba(255, 255, 255, 0.35);
+  border-right: 1px dashed rgba(255, 255, 255, 0.35);
+}
+
+.tlr-strap-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.tlr-strap-seam {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  display: block;
+  border-top: 1px dashed rgba(255, 255, 255, 0.45);
+}
+
+.tlr-buckle {
+  position: absolute;
+  overflow: visible;
+}
+
+.tlr-crimp {
+  position: absolute;
+  display: block;
+  border-radius: 2px;
+  box-shadow: 0 1px 1.5px color-mix(in oklab, black 30%, transparent);
+}
+
+.tlr-reel {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 34% 30%,
+    color-mix(in oklab, var(--tlr-fg) 48%, var(--tlr-bg)) 0%,
+    var(--tlr-fg) 58%,
+    color-mix(in oklab, var(--tlr-fg) 82%, var(--tlr-bg)) 100%
+  );
+  box-shadow:
+    inset 0 -1px 2px color-mix(in oklab, black 40%, transparent),
+    0 2px 3px color-mix(in oklab, black 28%, transparent);
+}
+
+.tlr-reel-ring {
+  position: absolute;
+  inset: 14%;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.tlr-reel-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 32%;
+  height: 32%;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.tlr-cord {
+  position: absolute;
+  display: block;
+  width: 1.5px;
+  background: color-mix(in oklab, var(--tlr-fg) 60%, transparent);
+  transform-origin: 50% 0;
+}
+
+.tlr-hang {
+  position: absolute;
+  left: 0;
+  display: block;
+}
+
+.tlr-shadow {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.tlr-badge {
+  position: absolute;
+  left: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.85em;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  outline: none;
+}
+
+.tlr-badge:focus-visible {
+  outline: 2px solid var(--tlr-ring);
+  outline-offset: 4px;
+}
+
+.tlr-flip {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-style: preserve-3d;
+}
+
+.tlr-clip {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.tlr-clip-stem {
+  position: absolute;
+  left: 50%;
+  display: block;
+  border-radius: 0 0 2px 2px;
+  transform: translateX(-50%);
+}
+
+.tlr-clip-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  clip-path: polygon(24% 0, 76% 0, 100% 72%, 94% 100%, 6% 100%, 0 72%);
+}
+
+.tlr-clip-shine {
+  position: absolute;
+  top: 1px;
+  left: 30%;
+  right: 30%;
+  display: block;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.tlr-clip-hole {
+  position: absolute;
+  left: 50%;
+  display: block;
+  border-radius: 999px;
+  background: var(--tlr-bg);
+  transform: translateX(-50%);
+  box-shadow: inset 0 1px 1px color-mix(in oklab, black 45%, transparent);
+}
+
+/* ---- Badge faces ---- */
+.tlr-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--tlr-border);
+  border-radius: 0.85em;
+  color: var(--tlr-card-fg);
+  background: var(--tlr-card);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.tlr-face--front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0.8em 0.7em;
+  transform: translateZ(1px);
+}
+
+.tlr-face--back {
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.tlr-band {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 2.15em;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 0.45em, color-mix(in oklab, white 10%, transparent) 0.45em 0.56em),
+    linear-gradient(180deg, color-mix(in oklab, currentColor 80%, white), currentColor 72%, color-mix(in oklab, currentColor 86%, black));
+}
+
+.tlr-band--tall {
+  height: 4.3em;
+}
+
+.tlr-band-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.tlr-hole {
+  position: absolute;
+  top: 0.72em;
+  left: 50%;
+  display: block;
+  width: 2.7em;
+  height: 0.56em;
+  border-radius: 999px;
+  background: var(--tlr-bg);
+  transform: translateX(-50%);
+  box-shadow:
+    inset 0 0.09em 0.2em color-mix(in oklab, black 55%, transparent),
+    0 0.05em 0 color-mix(in oklab, white 30%, transparent);
+}
+
+/* A glare that slides across as the badge turns, and a shade that darkens it edge-on. */
+.tlr-glare {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -50%;
+  display: block;
+  width: 200%;
+  opacity: 0.7;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 40%,
+    color-mix(in oklab, white 26%, transparent) 48%,
+    color-mix(in oklab, white 8%, transparent) 52%,
+    transparent 58%
+  );
+  transform: translateX(var(--gx, 0%));
+}
+
+.tlr-shade {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  background: #000000;
+  opacity: var(--shade, 0);
+}
+
+.tlr-portrait {
+  position: relative;
+  flex-shrink: 0;
+  display: block;
+  width: 5.3em;
+  height: 5.3em;
+  margin-top: 2.05em;
+  padding: 0.2em;
+  border-radius: 999px;
+  background: var(--tlr-card);
+  box-shadow: 0 0.15em 0.5em color-mix(in oklab, var(--tlr-fg) 22%, transparent);
+}
+
+.tlr-portrait-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--tlr-muted);
+}
+
+.tlr-silhouette {
+  width: 100%;
+  height: 100%;
+  color: color-mix(in oklab, var(--tlr-muted-fg) 60%, transparent);
+}
+
+.tlr-portrait-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tlr-name,
+.tlr-role,
+.tlr-team,
+.tlr-back-name,
+.tlr-back-role {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.tlr-name {
+  margin-top: 0.55em;
+  font-size: 1.08em;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  text-align: center;
+}
+
+.tlr-role {
+  margin-top: 0.15em;
+  font-size: 0.8em;
+  line-height: 1.375;
+  text-align: center;
+  color: var(--tlr-muted-fg);
+}
+
+.tlr-team {
+  margin-top: 0.5em;
+  font-size: 0.6em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--tlr-muted-fg);
+}
+
+.tlr-barcode {
+  display: block;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 0.5em;
+  border-top: 1px dashed var(--tlr-border);
+}
+
+.tlr-barcode-svg {
+  display: block;
+  width: 100%;
+  height: 1.6em;
+  color: color-mix(in oklab, var(--tlr-fg) 80%, transparent);
+}
+
+.tlr-digits {
+  display: block;
+  margin-top: 0.25em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.52em;
+  letter-spacing: 0.32em;
+  text-align: center;
+  color: var(--tlr-muted-fg);
+}
+
+.tlr-back-head {
+  position: absolute;
+  top: 2.6em;
+  left: 0.85em;
+  right: 0.85em;
+  display: block;
+}
+
+.tlr-back-name {
+  font-size: 0.95em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.tlr-back-role {
+  font-size: 0.72em;
+  line-height: 1.375;
+  color: var(--tlr-muted-fg);
+}
+
+.tlr-back-bio {
+  position: absolute;
+  top: 5.1em;
+  left: 0.85em;
+  right: 0.85em;
+  display: block;
+}
+
+.tlr-bio {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.74em;
+  line-height: 1.4;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.tlr-tags {
+  position: absolute;
+  top: 9.8em;
+  left: 0.85em;
+  right: 0.85em;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28em;
+}
+
+.tlr-tag {
+  display: block;
+  padding: 0.16em 0.6em;
+  border: 1px solid var(--tlr-border);
+  border-radius: 999px;
+  font-size: 0.6em;
+  line-height: 1.25;
+  color: var(--tlr-muted-fg);
+  background: color-mix(in oklab, var(--tlr-muted) 60%, transparent);
+}
+
+.tlr-link-list {
+  position: absolute;
+  bottom: 0.75em;
+  left: 0.6em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1em;
+}
+
+.tlr-link-list--printed {
+  transition: opacity 0.15s;
+}
+
+.tlr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.14em 0.3em;
+  border-radius: 0.4em;
+  font-size: 0.68em;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.tlr-link-icon {
+  flex-shrink: 0;
+  width: 1.05em;
+  height: 1.05em;
+}
+
+.tlr-qr {
+  position: absolute;
+  right: 0.8em;
+  bottom: 0.8em;
+  width: 3.9em;
+  height: 3.9em;
+  color: var(--tlr-fg);
+}
+
+.tlr-edgeline {
+  position: absolute;
+  top: 0.85em;
+  bottom: 0.85em;
+  display: block;
+  width: 2px;
+  background: color-mix(in oklab, var(--tlr-fg) 30%, var(--tlr-card));
+}
+
+/* The real, clickable links, laid over the printed ones while a badge shows its back. */
+.tlr-links {
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+.tlr-link--live {
+  border: 0;
+  color: var(--tlr-card-fg);
+  background: none;
+  pointer-events: auto;
+  outline: none;
+}
+
+.tlr-link--live:hover {
+  color: var(--tlr-card-fg);
+  background: var(--tlr-muted);
+}
+
+.tlr-link--live:focus-visible {
+  box-shadow: 0 0 0 2px var(--tlr-ring);
+}
+
+/* ---- Carousel (narrow screens) ---- */
+.tlr-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 50;
+  width: 48px;
+  pointer-events: none;
+}
+
+.tlr-fade--left {
+  left: 0;
+  background: linear-gradient(to right, var(--tlr-bg) 25%, transparent);
+}
+
+.tlr-fade--right {
+  right: 0;
+  background: linear-gradient(to left, var(--tlr-bg) 25%, transparent);
+}
+
+.tlr-dots {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tlr-dot {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--tlr-fg) 25%, transparent);
+  outline: none;
+  transition: width 0.3s, background-color 0.3s;
+}
+
+.tlr-dot:hover {
+  background: color-mix(in oklab, var(--tlr-fg) 45%, transparent);
+}
+
+.tlr-dot.is-current {
+  width: 24px;
+  background: var(--tlr-fg);
+}
+
+.tlr-dot:focus-visible {
+  box-shadow: 0 0 0 2px var(--tlr-ring);
+}
+
+/* ---- Caption ---- */
+.tlr-footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px 28px;
+  text-align: center;
+}
+
+.tlr-caption {
+  min-height: 2.6rem;
+}
+
+.tlr-caption-main {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tlr-caption-hint {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--tlr-muted-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tlr-link-list--printed,
+  .tlr-links,
+  .tlr-dot {
+    transition: none;
+  }
+}

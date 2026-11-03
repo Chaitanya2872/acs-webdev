@@ -28,6 +28,29 @@ export const aboutParagraphs = [
   'ACS Technologies was incorporated in 1980 by a team of computer scientists and engineers who had built their expertise at institutions that defined the global technology landscape — IBM, Bell Labs, IIM, ECIL, and ASCI. At a time when computing in India was in its infancy, these founders saw not just possibility, but obligation: to build a company that could bring world-class technology capability to Indian organisations. That founding conviction — rigorous expertise, applied boldly — has never changed. Today, listed on both BSE (Scrip Code: 530745) and NSE (Symbol: ACSTECH), with deployments ranging from AI systems for the Indian Armed Forces to geospatial work with ISRO and smart facility platforms across the Gulf, ACS Technologies stands as one of India\'s longest-standing and most trusted independent technology companies.',
 ];
 
+// The home page's About story, told in three short chapters (condensed from aboutParagraphs).
+export const aboutChapters = [
+  {
+    key: 'who',
+    kicker: 'Who we are',
+    title: 'Engineers first, since 1980.',
+    text: 'Founded by computer scientists and engineers from IBM, Bell Labs, IIM, ECIL and ASCI, at a time when computing in India was in its infancy.',
+    founders: ['IBM', 'Bell Labs', 'IIM', 'ECIL', 'ASCI'],
+  },
+  {
+    key: 'what',
+    kicker: 'What we do',
+    title: 'We build the systems that matter.',
+    text: 'From AI for the Armed Forces to geospatial work with ISRO and smart facilities across the Gulf: nine practices, one accountable partner.',
+  },
+  {
+    key: 'proof',
+    kicker: 'Why trust us',
+    title: 'Proven where failure isn’t an option.',
+    text: 'Government, defence and enterprise clients rely on us, and we are listed on both BSE (530745) and NSE (ACSTECH).',
+  },
+];
+
 export const testimonials = [
   {
     icon: 'bi-activity',
@@ -52,6 +75,7 @@ export const services = [
   {
     tag: 'Software',
     title: 'Software Products',
+    summary: 'Bespoke applications built around how your business works, from analysis and design through to rollout.',
     image: '/assets/img/home/Web Designing.jpg',
     to: paths.portfolio('software-development'),
     text: 'We pride ourselves on delivering bespoke software applications that are meticulously crafted to meet your specific business needs. Our expertise extends to both Structured and Object-Oriented Analysis, ensuring robust design and implementation across multiple platforms and databases.',
@@ -59,6 +83,7 @@ export const services = [
   {
     tag: 'Infrastructure',
     title: 'IT Services',
+    summary: 'Infrastructure designed, built and run for peak efficiency, so IT drives the business instead of slowing it.',
     image: '/assets/img/home/Server Room.jpg',
     to: paths.portfolio('it-infrastructure'),
     text: 'We specialize in transforming enterprises into IT-centric powerhouses, where every aspect of the infrastructure is streamlined for peak efficiency and performance. Our solutions encompass every facet of the IT landscape, ensuring that your Data Centers are not just up-to-date but ahead of the curve.',
@@ -66,6 +91,7 @@ export const services = [
   {
     tag: 'IoT & AI',
     title: 'IoT & Smart Analytics',
+    summary: 'Through IOTIQ, our IoT division: connected devices and analytics that make buildings and operations smarter.',
     image: '/assets/img/home/Home Control App.jpg',
     to: paths.product('iot-automation'),
     text: 'IOTIQ Automations, a specialised division of ACS Technologies, is at the vanguard of IoT and Smart Analytics innovations. We are dedicated to harnessing the power of interconnected devices and advanced data analytics to revolutionize how businesses operate and thrive.',

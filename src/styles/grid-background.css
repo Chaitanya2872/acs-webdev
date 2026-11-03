@@ -1,0 +1,47 @@
+/*--------------------------------------------------------------
+# Grid background (components/ui/GridBackground.jsx)
+# White, ruled with a faint 6rem × 4rem grid, with a light-blue glow near the top. The layers are
+# also exposed as custom properties so anything that must stay opaque (the home page's stacked
+# sections) can paint the very same backdrop, pinned to the screen so it lines up seamlessly.
+--------------------------------------------------------------*/
+:root {
+  --grid-bg-line: #f0f0f0;
+  --grid-bg-glow: radial-gradient(circle 500px at 50% 200px, #c9ebff, transparent);
+  --grid-bg-lines:
+    linear-gradient(to right, var(--grid-bg-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-bg-line) 1px, transparent 1px);
+  --grid-bg-size: 6rem 4rem;
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  background-image: var(--grid-bg-lines);
+  background-size: var(--grid-bg-size);
+  pointer-events: none;
+}
+
+.grid-bg--fixed {
+  position: fixed;
+}
+
+.grid-bg-glow {
+  position: absolute;
+  inset: 0;
+  background: var(--grid-bg-glow);
+}
+
+.grid-bg--corner .grid-bg-glow {
+  background: radial-gradient(circle 800px at 100% 200px, #c9ebff, transparent);
+}
+
+/* Site-wide: plain sections are see-through so the fixed backdrop shows behind every page; sections
+   with their own colour preset (.light-background / .dark-background) keep it. */
+section:not(.light-background):not(.dark-background),
+.section:not(.light-background):not(.dark-background) {
+  background-color: transparent;
+}
