@@ -1,0 +1,399 @@
+/*--------------------------------------------------------------
+# Clients page
+# The client list is the design: every name set large in one running wall of type. Picking a sector
+# (or typing a name) keeps those names in ink and lets the rest fall back to a faint grey.
+--------------------------------------------------------------*/
+
+/* ---------- Hero ---------- */
+.cl-hero {
+  padding: 64px 0 0;
+}
+
+.cl-hero h1 {
+  margin: 18px 0 28px;
+  font-size: clamp(42px, 6.4vw, 84px);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  font-variant-numeric: tabular-nums;
+}
+
+.cl-hero h1 span {
+  color: #b9b9be;
+}
+
+.cl-hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px 48px;
+}
+
+.cl-hero-row p {
+  max-width: 520px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--lp-muted);
+}
+
+.cl-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cl-logos li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  padding: 10px;
+  border: 1px solid var(--lp-line);
+  border-radius: 16px;
+  background: #ffffff;
+  transition: transform 0.3s var(--lp-ease), box-shadow 0.3s;
+}
+
+.cl-logos li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -14px rgba(0, 0, 0, 0.3);
+}
+
+.cl-logos img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* ---------- Wall of names ---------- */
+.cl-wall-grid {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+}
+
+.cl-rail {
+  position: sticky;
+  top: 110px;
+}
+
+.cl-sectors {
+  margin: 14px 0 20px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--lp-line);
+}
+
+.cl-sectors button {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 0;
+  border: 0;
+  border-bottom: 1px solid var(--lp-line);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: #a1a1aa;
+  background: none;
+  transition: color 0.3s, padding 0.4s var(--lp-ease);
+}
+
+.cl-sectors button:hover {
+  color: var(--lp-ink);
+}
+
+.cl-sectors button[aria-pressed='true'] {
+  padding-left: 14px;
+  color: var(--lp-ink);
+  background: radial-gradient(circle at 3px 50%, #0095da 3px, transparent 3.5px);
+}
+
+.cl-sector-count {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--lp-muted);
+}
+
+.cl-sectors button[aria-pressed='true'] .cl-sector-count {
+  color: #0095da;
+}
+
+.cl-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--lp-line);
+  border-radius: 999px;
+  color: var(--lp-muted);
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.cl-search:focus-within {
+  border-color: var(--lp-ink);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+}
+
+.cl-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 15px;
+  color: var(--lp-ink);
+  background: none;
+}
+
+.cl-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--lp-muted);
+}
+
+.cl-readout strong {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--lp-ink);
+}
+
+.cl-readout button {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--lp-ink);
+  background: none;
+}
+
+.cl-wall {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(21px, 2.5vw, 36px);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.32;
+  color: var(--lp-ink);
+}
+
+.cl-wall li {
+  display: inline;
+  transition: color 0.45s var(--lp-ease);
+}
+
+/* A light slash between names, so the wall reads as one running line. */
+.cl-wall li:not(:last-child)::after {
+  content: '/';
+  margin: 0 0.32em;
+  font-weight: 300;
+  color: #d9d9de;
+}
+
+.cl-wall li.is-dim {
+  color: #e1e1e5;
+}
+
+.cl-wall.is-filtered li.is-lit .cl-name {
+  background: linear-gradient(transparent 62%, rgba(0, 149, 218, 0.16) 62%);
+}
+
+.cl-name {
+  position: relative;
+  transition: color 0.2s;
+}
+
+.cl-wall li.is-lit .cl-name:hover {
+  color: #0095da;
+}
+
+/* ---------- Partnership ---------- */
+.cl-partner {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  overflow: hidden;
+  border: 1px solid var(--lp-line);
+  border-radius: 28px;
+  background: #ffffff;
+}
+
+.cl-partner-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: clamp(28px, 5vw, 64px);
+  background: var(--lp-surface);
+}
+
+.cl-partner-logo img {
+  max-width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.cl-partner-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(28px, 5vw, 64px);
+}
+
+.cl-partner-kicker {
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0095da;
+}
+
+.cl-partner-copy h3 {
+  margin: 0 0 14px;
+  font-size: clamp(26px, 3vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.cl-partner-copy p {
+  max-width: 420px;
+  margin: 0 0 26px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--lp-muted);
+}
+
+.cl-cta-section {
+  padding-bottom: 0;
+}
+
+/* Wide screens: names never break mid-name, and hovering one shows which sector it belongs to. */
+@media (min-width: 992px) {
+  .cl-name {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .cl-wall li.is-lit .cl-name::before {
+    content: attr(data-sectors);
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    z-index: 2;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    color: #ffffff;
+    background: var(--lp-ink);
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s var(--lp-ease);
+  }
+
+  .cl-wall li.is-lit .cl-name:hover::before {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .cl-hero {
+    padding-top: 40px;
+  }
+
+  .cl-wall-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* The switches turn into a row of pills that stays in reach while the wall scrolls under it. */
+  .cl-rail {
+    top: 64px;
+    z-index: 3;
+    margin-inline: -12px;
+    padding: 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .cl-rail > .lp-eyebrow {
+    display: none;
+  }
+
+  .cl-sectors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 10px;
+    border: 0;
+  }
+
+  .cl-sectors button,
+  .cl-sectors button[aria-pressed='true'] {
+    gap: 6px;
+    width: auto;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 999px;
+    font-size: 13px;
+    background: var(--lp-chip);
+  }
+
+  .cl-sectors button[aria-pressed='true'] {
+    color: #ffffff;
+    background: var(--lp-ink);
+  }
+
+  .cl-sectors button[aria-pressed='true'] .cl-sector-count {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .cl-readout {
+    margin-top: 8px;
+  }
+
+  .cl-partner {
+    grid-template-columns: 1fr;
+  }
+
+  .cl-partner-logo {
+    min-height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-wall li,
+  .cl-sectors button,
+  .cl-logos li {
+    transition: none;
+  }
+}
