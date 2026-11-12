@@ -72,6 +72,87 @@
   mix-blend-mode: multiply;
 }
 
+/* ---------- Scrolling sector columns (components/ui/VerticalLogoScroller) ---------- */
+.cl-scrollers {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  padding: 20px 14px 0;
+  border: 1px solid var(--lp-line);
+  border-radius: 28px;
+  background: var(--lp-surface);
+}
+
+.cl-scroller h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--lp-ink);
+}
+
+.cl-scroller h3::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--tone);
+}
+
+.cl-scroller h3 span {
+  margin-left: auto;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--lp-muted);
+}
+
+.cl-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--lp-line);
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--lp-ink);
+  background: #ffffff;
+  overflow-wrap: anywhere;
+}
+
+.cl-chip-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone), #ffffff 88%);
+}
+
+.cl-chip-dot--logo {
+  padding: 6px;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--lp-line);
+}
+
+.cl-chip-dot--logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 /* ---------- Client cards ---------- */
 /* One hue per sector, used for the circle and the active filter pill. */
 .cl [data-tone='0'] { --tone: #0095da; }
@@ -338,6 +419,16 @@
     width: 100%;
   }
 
+  .cl-scrollers {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 20px;
+    padding-bottom: 14px;
+  }
+
+  .cl-scroller {
+    --vls-height: 360px;
+  }
+
   .cl-partner {
     grid-template-columns: 1fr;
   }
@@ -348,6 +439,24 @@
 }
 
 @media (max-width: 575px) {
+  .cl-scrollers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    padding: 14px 10px;
+  }
+
+  .cl-chip {
+    gap: 8px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .cl-chip-dot {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+  }
+
   .cl-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;

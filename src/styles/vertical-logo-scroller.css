@@ -1,0 +1,67 @@
+/*--------------------------------------------------------------
+# Vertical logo scroller (components/ui/VerticalLogoScroller)
+--------------------------------------------------------------*/
+
+.vls {
+  --vls-gap: 10px;
+  position: relative;
+  height: var(--vls-height, 520px);
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+.vls-track {
+  display: flex;
+  flex-direction: column;
+  animation: vls-scroll var(--scroll-duration, 40s) linear infinite;
+  will-change: transform;
+}
+
+.vls-track--down {
+  animation-direction: reverse;
+}
+
+.vls:hover .vls-track,
+.vls:focus-within .vls-track {
+  animation-play-state: paused;
+}
+
+/* Each set carries its own trailing gap, so half the track is exactly one set. */
+.vls-set {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vls-gap);
+  padding-bottom: var(--vls-gap);
+}
+
+.vls-item {
+  display: block;
+}
+
+@keyframes vls-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* No motion: the column becomes an ordinary scrollable list. */
+@media (prefers-reduced-motion: reduce) {
+  .vls {
+    overflow-y: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .vls-track {
+    animation: none;
+  }
+
+  .vls-set[aria-hidden='true'] {
+    display: none;
+  }
+}

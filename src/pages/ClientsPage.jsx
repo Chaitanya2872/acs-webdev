@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import SplitText from '../components/common/SplitText';
 import HomeHeading from '../components/home/HomeHeading';
+import VerticalLogoScroller from '../components/ui/VerticalLogoScroller';
 import { clientSectors } from '../data/clients';
 import { clientLogos } from '../data/home';
 import useDocumentTitle from '../hooks/useDocumentTitle';
@@ -62,6 +63,29 @@ const clients = (() => {
     .sort((a, b) => a.search.localeCompare(b.search));
 })();
 
+// One scrolling column per sector. Short lists are repeated so a column never runs out of names, and
+// the loop time follows the list's length so every column drifts at about the same pace.
+const MIN_COLUMN_ITEMS = 14;
+const SECONDS_PER_ITEM = 2.6;
+const columns = sectors.map((sector) => {
+  const own = clients.filter((client) => client.sectors.includes(sector.index));
+  const repeats = Math.ceil(MIN_COLUMN_ITEMS / own.length);
+  const run = Array.from({ length: repeats }, () => own).flat();
+  return {
+    ...sector,
+    speed: `${Math.round(run.length * SECONDS_PER_ITEM)}s`,
+    direction: sector.index % 2 ? 'down' : 'up',
+    items: run.map((client, i) => (
+      <span key={`${client.name}-${i}`} className="cl-chip">
+        <span className={`cl-chip-dot${client.logo ? ' cl-chip-dot--logo' : ''}`} aria-hidden="true">
+          {client.logo ? <img src={client.logo} alt="" loading="lazy" /> : client.letters}
+        </span>
+        {client.name}
+      </span>
+    )),
+  };
+});
+
 const YEARS = new Date().getFullYear() - 1980;
 
 export default function ClientsPage() {
@@ -107,9 +131,27 @@ export default function ClientsPage() {
         </div>
       </section>
 
+      {/* ---- Scrolling columns, one per sector ---- */}
+      <section className="lp-section">
+        <div className="container">
+          <HomeHeading title="Trusted across every sector" text="Hover a column to pause it." />
+          <div className="cl-scrollers">
+            {columns.map((column) => (
+              <div key={column.label} className="cl-scroller" data-tone={column.index}>
+                <h3>
+                  {column.label} <span>{column.count}</span>
+                </h3>
+                <VerticalLogoScroller logos={column.items} speed={column.speed} direction={column.direction} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ---- Client cards ---- */}
       <section className="lp-section">
         <div className="container">
+          <HomeHeading title="Full directory" text="Every client, A to Z." />
           <div className="cl-filters">
             <div className="cl-sectors" role="group" aria-label="Filter clients by sector">
               <button type="button" aria-pressed={sector === null} onClick={() => setSector(null)}>
