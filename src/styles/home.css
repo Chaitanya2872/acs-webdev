@@ -412,6 +412,7 @@
   text-align: left;
   color: #b4bac4;
   background: none;
+  transform-origin: left center;
   transition: color 0.5s var(--lp-ease), transform 0.5s var(--lp-ease);
 }
 
@@ -420,8 +421,13 @@
   color: var(--lp-ink);
 }
 
+/* Hovered and selected items come forward (grow in place) instead of sliding sideways. */
+.lp-chapters-nav button:hover {
+  transform: scale(1.06);
+}
+
 .lp-chapters-nav .is-active button {
-  transform: translateX(8px);
+  transform: scale(1.14);
 }
 
 .lp-chapters-num {
