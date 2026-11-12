@@ -316,6 +316,11 @@
   padding-inline: var(--tilt-gutter);
 }
 
+.lp-tilt-head .lp-head {
+  justify-content: center;
+  text-align: center;
+}
+
 .lp-tilt {
   width: 100%;
   height: clamp(340px, 42vw, 600px);

@@ -40,3 +40,23 @@
   max-width: none;
   object-fit: cover;
 }
+
+/* Optional name in the middle of a tile; sliced with the image so it follows the curve. */
+.tgh-label {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tgh-label > span {
+  max-width: 88%;
+  padding: 0.45em 0.9em;
+  border-radius: 0.6em;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  color: #18181b;
+  background: rgba(255, 255, 255, 0.92);
+}

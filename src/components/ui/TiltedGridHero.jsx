@@ -76,7 +76,8 @@ function measure(width, height, tile, aspect, gap, bend) {
 }
 
 /**
- * @typedef {{ src: string, alt?: string }} TiltedGridImage
+ * @typedef {{ src: string, alt?: string, label?: string }} TiltedGridImage  `label` is shown
+ *   in the middle of the image.
  *
  * @param {object} props
  * @param {TiltedGridImage[]} props.images  Run along the row in order; a tile takes its next image each
@@ -238,6 +239,15 @@ export function TiltedGridHero({
                       draggable={false}
                       style={{ left: u(-k * share), width: u(aspectRatio), height: u(1) }}
                     />
+                  ) : null}
+                  {/* The label is cut into the same strips as the image, so it bends with the tile. */}
+                  {img?.label ? (
+                    <span
+                      className="tgh-label"
+                      style={{ left: u(-k * share), width: u(aspectRatio), height: u(1), fontSize: u(0.075) }}
+                    >
+                      <span>{img.label}</span>
+                    </span>
                   ) : null}
                 </div>
               ))}
