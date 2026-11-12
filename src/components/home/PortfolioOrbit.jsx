@@ -6,6 +6,9 @@ import { createGlobe } from './globeRenderer';
 
 const ORBIT_SPEED = 0.5; // radians per second
 const HOVER_SPEED = 0.16; // slows (doesn't stop) while hovered, so cards stay clickable
+const INTRO_SPEED = 2.2; // opening spin, eases down to ORBIT_SPEED
+const INTRO_FADE = 0.8; // seconds for the whole ring to fade in on load
+const BACK_ALPHA = 0.35; // opacity of a card at the far side of the ring
 const SPIN_SPEED = 0.09; // globe turn, radians per second
 const AXIAL_TILT = 0.41; // Earth's 23.4°
 const START_SPIN = -1.3; // opens on India / the Middle East
@@ -15,8 +18,8 @@ const PERSPECTIVE = 1100;
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 const smooth = (t) => t * t * (3 - 2 * t);
 
-// Portfolio images orbiting a rotating white grid globe. Cards fade in as they swing round to the
-// front and out as they pass behind the globe. The ring leans with the pointer, can be dragged, and
+// Portfolio images orbiting a rotating white grid globe. Cards stay visible all the way round the
+// ring, dimming and shrinking as they pass behind the globe. The ring leans with the pointer, can be dragged, and
 // slows while hovered.
 export default function PortfolioOrbit() {
   const stageRef = useRef(null);
@@ -33,7 +36,14 @@ export default function PortfolioOrbit() {
 
     const view = { w: 0, h: 0, cx: 0, cy: 0, ring: 0, radius: 0 };
     const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-    const motion = { orbit: 0, spin: START_SPIN, speed: ORBIT_SPEED, target: ORBIT_SPEED };
+    // Opens already turning: the ring starts fast and settles to cruising speed while the cards fade in.
+    const motion = {
+      orbit: 0,
+      spin: START_SPIN,
+      speed: still ? ORBIT_SPEED : INTRO_SPEED,
+      target: ORBIT_SPEED,
+      intro: still ? 1 : 0,
+    };
     const drag = { active: false, lastX: 0, moved: 0, velocity: 0 };
     let frame = null;
     let last = 0;
@@ -87,7 +97,9 @@ export default function PortfolioOrbit() {
         if (!card) return;
         const pt = ringPoint(motion.orbit + (i * Math.PI * 2) / count, ring, tilt, roll);
         const depth = (pt.z / ring + 1) / 2; // 0 at the back, 1 at the front
-        const alpha = smooth(clamp01((depth - 0.14) / 0.36));
+        // Cards stay on the ring all the way round: dimmed at the back, never popping in from nowhere.
+        const alpha = (BACK_ALPHA + (1 - BACK_ALPHA) * smooth(clamp01((depth - 0.1) / 0.5))) * motion.intro;
+        card.style.pointerEvents = depth < 0.3 ? 'none' : '';
         const scale = pt.scale * (0.74 + depth * 0.26);
         const spinY = (pt.x / ring) * -18; // cards turn slightly as they sweep across the sides
         card.style.transform = `translate3d(${(view.cx + pt.x).toFixed(1)}px, ${(view.cy + pt.y).toFixed(1)}px, 0) translate(-50%, -50%) perspective(600px) rotateY(${spinY.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
@@ -104,7 +116,8 @@ export default function PortfolioOrbit() {
       pointer.x += (pointer.tx - pointer.x) * 0.05;
       pointer.y += (pointer.ty - pointer.y) * 0.05;
 
-      motion.speed += (motion.target - motion.speed) * 0.06;
+      motion.intro = Math.min(1, motion.intro + dt / INTRO_FADE);
+      motion.speed += (motion.target - motion.speed) * (motion.intro < 1 ? 0.03 : 0.06);
       if (!drag.active) {
         motion.orbit += (motion.speed + drag.velocity) * dt;
         drag.velocity *= 0.94;
