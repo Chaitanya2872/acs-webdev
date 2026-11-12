@@ -1,18 +1,38 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import SplitText from '../components/common/SplitText';
 import HomeHeading from '../components/home/HomeHeading';
 import TeamLanyardRail from '../components/ui/TeamLanyardRail';
+import TeamMemberCard from '../components/ui/TeamMemberCard';
 import { coreTeam, executiveTeam } from '../data/team';
 import useDocumentTitle from '../hooks/useDocumentTitle';
 import { paths } from '../routes/paths';
 import '../styles/team.css';
 
-const isIndependent = (member) => /independent/i.test(member.designation);
 const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-// The bio's opening sentence, for the back of a badge.
+// The bio's opening sentence, for the short copy on a member card.
 const firstSentence = (text) => (text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text).trim();
+// Splits a name for the card's two-line display: the surname (plus any trailing "(Retd), VSM") goes on
+// the second line, everything before it on the first.
+const splitName = (name) => {
+  const cut = name.indexOf(' (');
+  const base = cut === -1 ? name : name.slice(0, cut);
+  const suffix = cut === -1 ? '' : name.slice(cut);
+  const at = base.lastIndexOf(' ');
+  return at === -1
+    ? { firstName: '', lastName: name }
+    : { firstName: base.slice(0, at), lastName: base.slice(at + 1) + suffix };
+};
+
+// Editorial cards for the board: the bio's first line, with the arrow opening the full profile.
+const boardCards = coreTeam.map((member) => ({
+  ...splitName(member.name),
+  key: member.name,
+  role: member.designation,
+  image: member.image,
+  description: firstSentence(member.bio[0]),
+}));
 
 // Badges for the executive team: LinkedIn on the back.
 const executiveBadges = executiveTeam.map((member, i) => ({
@@ -112,23 +132,6 @@ export default function TeamPage() {
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((dir) => setOpen((i) => (i === null ? i : (i + dir + count) % count)), [count]);
 
-  // Badges for the board: the bio's first line on the back, and a button that opens the full profile.
-  const boardBadges = useMemo(
-    () =>
-      coreTeam.map((member, i) => ({
-        id: slug(member.name),
-        name: member.name,
-        role: member.designation,
-        team: isIndependent(member) ? 'ACS · Independent' : 'ACS · Board',
-        image: member.image,
-        tone: isIndependent(member) ? 2 : 1,
-        bio: firstSentence(member.bio[0]),
-        tags: [isIndependent(member) ? 'Independent' : 'Leadership'],
-        links: [{ label: 'Full profile', onClick: () => setOpen(i) }],
-      })),
-    [],
-  );
-
   return (
     <div className="lp tm">
       {/* ---- Hero ---- */}
@@ -170,14 +173,23 @@ export default function TeamPage() {
       {/* ---- Board & leadership ---- */}
       <section className="lp-section">
         <div className="container">
-          <HomeHeading title="Board & leadership" text="Brush along the rail to meet someone; click a badge to flip it." />
+          <HomeHeading title="Board & leadership" text="Select the arrow for a full profile." />
+          <div className="tm-members">
+            {boardCards.map((card, i) => (
+              <TeamMemberCard
+                key={card.key}
+                position={i % 2 ? 'right' : 'left'}
+                jobPosition={card.role}
+                firstName={card.firstName}
+                lastName={card.lastName}
+                imageUrl={card.image}
+                description={card.description}
+                onAction={() => setOpen(i)}
+                actionLabel={`Full profile of ${card.key}`}
+              />
+            ))}
+          </div>
         </div>
-        <TeamLanyardRail
-          items={boardBadges}
-          className="tm-rail"
-          caption="Hover the rail to bring a badge forward, pull one down, click to flip it."
-          autoplay
-        />
       </section>
 
       {/* ---- Executive team ---- */}

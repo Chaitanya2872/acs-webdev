@@ -1,7 +1,6 @@
 /*--------------------------------------------------------------
 # Clients page
-# Every client is a card with a round badge: its initials (or logo) on a tint of its sector's colour.
-# Sector pills and a search box filter the grid.
+# Client names drift past in five scrolling columns, one per sector.
 --------------------------------------------------------------*/
 
 /* ---------- Hero ---------- */
@@ -73,14 +72,17 @@
 }
 
 /* ---------- Scrolling sector columns (components/ui/VerticalLogoScroller) ---------- */
+/* One hue per sector, used for the column's dot and a hovered name. */
+.cl [data-tone='0'] { --tone: #0095da; }
+.cl [data-tone='1'] { --tone: #6d5ae6; }
+.cl [data-tone='2'] { --tone: #e08a00; }
+.cl [data-tone='3'] { --tone: #0f9f6e; }
+.cl [data-tone='4'] { --tone: #e0457b; }
+
 .cl-scrollers {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
-  padding: 20px 14px 0;
-  border: 1px solid var(--lp-line);
-  border-radius: 28px;
-  background: var(--lp-surface);
+  gap: clamp(16px, 2.5vw, 36px);
 }
 
 .cl-scroller h3 {
@@ -111,242 +113,25 @@
   color: var(--lp-muted);
 }
 
-.cl-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--lp-line);
-  border-radius: 16px;
-  font-size: 14px;
+/* Names are plain type, no cards. */
+.cl-scroller {
+  --vls-gap: 14px;
+}
+
+.cl-scroll-name {
+  display: block;
+  padding: 0 6px;
+  font-size: 17px;
   font-weight: 500;
-  line-height: 1.3;
-  color: var(--lp-ink);
-  background: #ffffff;
-  overflow-wrap: anywhere;
-}
-
-.cl-chip-dot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  flex: none;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--tone);
-  background: color-mix(in srgb, var(--tone), #ffffff 88%);
-}
-
-.cl-chip-dot--logo {
-  padding: 6px;
-  background: #ffffff;
-  box-shadow: 0 0 0 1px var(--lp-line);
-}
-
-.cl-chip-dot--logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-/* ---------- Client cards ---------- */
-/* One hue per sector, used for the circle and the active filter pill. */
-.cl [data-tone='0'] { --tone: #0095da; }
-.cl [data-tone='1'] { --tone: #6d5ae6; }
-.cl [data-tone='2'] { --tone: #e08a00; }
-.cl [data-tone='3'] { --tone: #0f9f6e; }
-.cl [data-tone='4'] { --tone: #e0457b; }
-
-.cl-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px 24px;
-}
-
-.cl-sectors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.cl-sectors button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: 0;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--lp-text);
-  background: var(--lp-chip);
-  transition: background 0.2s, color 0.2s;
-}
-
-.cl-sectors button:hover {
-  background: #e4e4e6;
-}
-
-.cl-sectors button[aria-pressed='true'] {
-  color: #ffffff;
-  background: var(--tone, var(--lp-ink));
-}
-
-.cl-sector-count {
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  opacity: 0.6;
-}
-
-.cl-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: min(260px, 100%);
-  padding: 9px 14px;
-  border: 1px solid var(--lp-line);
-  border-radius: 999px;
-  color: var(--lp-muted);
-  background: #ffffff;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.cl-search:focus-within {
-  border-color: var(--lp-ink);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
-}
-
-.cl-search input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-size: 15px;
-  color: var(--lp-ink);
-  background: none;
-}
-
-.cl-readout {
-  margin: 18px 0 28px;
-  font-size: 13px;
-  color: var(--lp-muted);
-}
-
-.cl-readout strong {
-  font-weight: 600;
-  color: var(--lp-ink);
-}
-
-.cl-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.cl-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 14px 20px;
-  border: 1px solid var(--lp-line);
-  border-radius: 24px;
-  text-align: center;
-  background: #ffffff;
-  animation: cl-card-in 0.5s var(--lp-ease) both;
-  animation-delay: calc(var(--i, 0) * 25ms);
-  transition: transform 0.35s var(--lp-ease), box-shadow 0.35s, border-color 0.35s;
-}
-
-@keyframes cl-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.96);
-  }
-}
-
-.cl-card:hover {
-  border-color: color-mix(in srgb, var(--tone), transparent 60%);
-  box-shadow: 0 22px 40px -26px color-mix(in srgb, var(--tone), #000000 20%);
-  transform: translateY(-6px);
-}
-
-/* The circle: the client's initials on a soft tint of its sector colour, inside a thin ring. */
-.cl-circle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 92px;
-  height: 92px;
-  margin-bottom: 16px;
-  border-radius: 50%;
-  font-size: 26px;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: var(--tone);
-  background: color-mix(in srgb, var(--tone), #ffffff 90%);
-  box-shadow:
-    0 0 0 5px #ffffff,
-    0 0 0 6px color-mix(in srgb, var(--tone), transparent 65%);
-  transition: background 0.35s, color 0.35s, transform 0.45s var(--lp-ease);
-}
-
-.cl-card:hover .cl-circle {
-  color: #ffffff;
-  background: var(--tone);
-  transform: scale(1.06);
-}
-
-.cl-circle--logo,
-.cl-card:hover .cl-circle--logo {
-  padding: 18px;
-  background: #ffffff;
-}
-
-.cl-circle--logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.cl-card-name {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   line-height: 1.3;
   color: var(--lp-ink);
   overflow-wrap: anywhere;
+  transition: color 0.2s;
 }
 
-.cl-card-sector {
-  margin-top: 6px;
-  font-size: 12px;
-  color: var(--lp-muted);
-}
-
-.cl-empty {
-  padding: 48px 0;
-  text-align: center;
-  color: var(--lp-muted);
-}
-
-.cl-empty button {
-  padding: 0;
-  border: 0;
-  font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  color: var(--lp-ink);
-  background: none;
+.cl-scroll-name:hover {
+  color: var(--tone);
 }
 
 /* ---------- Partnership ---------- */
@@ -415,14 +200,9 @@
     padding-top: 40px;
   }
 
-  .cl-search {
-    width: 100%;
-  }
-
   .cl-scrollers {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    row-gap: 20px;
-    padding-bottom: 14px;
+    row-gap: 28px;
   }
 
   .cl-scroller {
@@ -441,45 +221,14 @@
 @media (max-width: 575px) {
   .cl-scrollers {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    padding: 14px 10px;
   }
 
-  .cl-chip {
-    gap: 8px;
-    padding: 8px;
-    font-size: 12px;
-  }
-
-  .cl-chip-dot {
-    width: 28px;
-    height: 28px;
-    font-size: 10px;
-  }
-
-  .cl-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  }
-
-  .cl-card {
-    padding: 18px 10px 16px;
-  }
-
-  .cl-circle {
-    width: 72px;
-    height: 72px;
-    font-size: 21px;
+  .cl-scroll-name {
+    font-size: 15px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cl-card {
-    animation: none;
-  }
-
-  .cl-card,
-  .cl-circle,
   .cl-logos li {
     transition: none;
   }

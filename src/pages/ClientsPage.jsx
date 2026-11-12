@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import SplitText from '../components/common/SplitText';
@@ -10,7 +9,7 @@ import useDocumentTitle from '../hooks/useDocumentTitle';
 import { paths } from '../routes/paths';
 import '../styles/clients.css';
 
-// Short names for the sector switches; the data's own label is the fallback.
+// Short names for the sector columns; the data's own label is the fallback.
 const SHORT_LABELS = {
   'Government Sector': 'Government',
   'Corporate / Private Sector': 'Corporate',
@@ -25,24 +24,6 @@ const sectors = clientSectors.map((sector, index) => ({
   count: sector.clients.length,
 }));
 
-const logoByName = new Map(clientLogos.map((logo) => [logo.name.toLowerCase(), logo.image]));
-
-// Letters for a client's circle: its own acronym when the name leads with one (IBM, DRDO), otherwise
-// the initials of its first two meaningful words.
-const SKIP = new Set(['of', 'the', 'and', 'for', 'dr', 'sri']);
-const monogram = (name) => {
-  const words = name
-    .replace(/\(.*?\)/g, ' ')
-    .split(/[^A-Za-z0-9]+/)
-    .filter((word) => word && !SKIP.has(word.toLowerCase()));
-  const [first = ''] = words;
-  if (first.length >= 2 && first.length <= 4 && first === first.toUpperCase()) return first;
-  return words
-    .slice(0, 2)
-    .map((word) => word[0].toUpperCase())
-    .join('');
-};
-
 // Every client once, A to Z, remembering each sector it appears under.
 const clients = (() => {
   const byName = new Map();
@@ -52,15 +33,7 @@ const clients = (() => {
       byName.get(name).sectors.push(index);
     });
   });
-  return [...byName.values()]
-    .map((client) => ({
-      ...client,
-      search: client.name.toLowerCase(),
-      sectorText: client.sectors.map((i) => sectors[i].label).join(' · '),
-      letters: monogram(client.name),
-      logo: logoByName.get(client.name.toLowerCase()),
-    }))
-    .sort((a, b) => a.search.localeCompare(b.search));
+  return [...byName.values()].sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 })();
 
 // One scrolling column per sector. Short lists are repeated so a column never runs out of names, and
@@ -76,10 +49,7 @@ const columns = sectors.map((sector) => {
     speed: `${Math.round(run.length * SECONDS_PER_ITEM)}s`,
     direction: sector.index % 2 ? 'down' : 'up',
     items: run.map((client, i) => (
-      <span key={`${client.name}-${i}`} className="cl-chip">
-        <span className={`cl-chip-dot${client.logo ? ' cl-chip-dot--logo' : ''}`} aria-hidden="true">
-          {client.logo ? <img src={client.logo} alt="" loading="lazy" /> : client.letters}
-        </span>
+      <span key={`${client.name}-${i}`} className="cl-scroll-name">
         {client.name}
       </span>
     )),
@@ -90,18 +60,6 @@ const YEARS = new Date().getFullYear() - 1980;
 
 export default function ClientsPage() {
   useDocumentTitle('Clients');
-  const [sector, setSector] = useState(null); // null = every sector
-  const [query, setQuery] = useState('');
-
-  const needle = query.trim().toLowerCase();
-  const shown = useMemo(
-    () =>
-      clients.filter(
-        (client) => (sector === null || client.sectors.includes(sector)) && (!needle || client.search.includes(needle)),
-      ),
-    [sector, needle],
-  );
-
   return (
     <div className="lp cl">
       {/* ---- Hero ---- */}
@@ -145,78 +103,6 @@ export default function ClientsPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ---- Client cards ---- */}
-      <section className="lp-section">
-        <div className="container">
-          <HomeHeading title="Full directory" text="Every client, A to Z." />
-          <div className="cl-filters">
-            <div className="cl-sectors" role="group" aria-label="Filter clients by sector">
-              <button type="button" aria-pressed={sector === null} onClick={() => setSector(null)}>
-                Everyone <span className="cl-sector-count">{clients.length}</span>
-              </button>
-              {sectors.map((item) => (
-                <button
-                  key={item.label}
-                  type="button"
-                  aria-pressed={sector === item.index}
-                  data-tone={item.index}
-                  onClick={() => setSector(sector === item.index ? null : item.index)}
-                >
-                  {item.label} <span className="cl-sector-count">{item.count}</span>
-                </button>
-              ))}
-            </div>
-            <label className="cl-search">
-              <i className="bi bi-search" aria-hidden="true" />
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Find a name"
-                aria-label="Find a client by name"
-              />
-            </label>
-          </div>
-
-          <p className="cl-readout" aria-live="polite">
-            Showing <strong>{shown.length}</strong> of {clients.length} clients
-          </p>
-
-          {shown.length ? (
-            // Re-keyed per sector so the cards step in again whenever the filter changes.
-            <ul key={sector ?? 'all'} className="cl-grid" aria-label="Our clients, A to Z">
-              {shown.map((client, i) => (
-                <li
-                  key={client.name}
-                  className="cl-card"
-                  data-tone={client.sectors[0]}
-                  style={{ '--i': Math.min(i, 24) }}
-                >
-                  <span className={`cl-circle${client.logo ? ' cl-circle--logo' : ''}`} aria-hidden="true">
-                    {client.logo ? <img src={client.logo} alt="" loading="lazy" /> : client.letters}
-                  </span>
-                  <span className="cl-card-name">{client.name}</span>
-                  <span className="cl-card-sector">{client.sectorText}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="cl-empty">
-              No client matches &ldquo;{query.trim()}&rdquo;.{' '}
-              <button
-                type="button"
-                onClick={() => {
-                  setSector(null);
-                  setQuery('');
-                }}
-              >
-                Show everyone
-              </button>
-            </p>
-          )}
         </div>
       </section>
 

@@ -81,6 +81,15 @@
   transform: translateY(-6px) scale(1.08);
 }
 
+/* ---------- Board: editorial member cards (components/ui/TeamMemberCard) ---------- */
+.tm-members {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(64px, 9vw, 128px);
+  max-width: 980px;
+  margin: 32px auto 0;
+}
+
 /* ---------- Lanyard rails (components/ui/TeamLanyardRail) ---------- */
 .tm-rail {
   margin-top: 8px;
