@@ -110,8 +110,77 @@
     color: var(--plain-ink);
   }
 
-  /* An invisible bridge over the gap above each panel, so the pointer can travel into it without the
-     hover (and the panel) dropping. */
+  .header--plain .navmenu a::after {
+    display: none;
+  }
+
+  /* Dropdown panels still need a surface so their links stay readable over the page. A panel sits
+     directly under its item and fades up a few pixels as it opens. */
+  .header--plain .navmenu .dropdown ul {
+    top: 100%;
+    left: 0;
+    margin: 6px 0 0;
+    padding: 6px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 15, 20, 0.06);
+    box-shadow: 0 24px 48px -24px rgba(20, 24, 40, 0.3);
+    transform: translateY(6px);
+    transition:
+      opacity 0.18s ease,
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.18s;
+  }
+
+  .header--plain .navmenu .dropdown ul li {
+    min-width: 220px;
+  }
+
+  /* Opens on hover, and on keyboard focus too. */
+  .header--plain .navmenu .dropdown:hover > ul,
+  .header--plain .navmenu .dropdown:focus-within > ul {
+    top: 100%;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  /* Nested panels fly out beside their parent row, level with it: to the right by default, to the left
+     (.flyout-left) for menus near the right edge of the screen. They are never clipped or scrolled. */
+  .header--plain .navmenu .dropdown .dropdown > ul,
+  .header--plain .navmenu .dropdown .dropdown:hover > ul,
+  .header--plain .navmenu .dropdown .dropdown:focus-within > ul {
+    top: -7px;
+    right: auto;
+    left: 100%;
+    max-height: none;
+    margin: 0 0 0 8px;
+    overflow: visible;
+  }
+
+  .header--plain .navmenu .dropdown .dropdown > ul {
+    transform: translateX(-6px);
+  }
+
+  .header--plain .navmenu .dropdown .dropdown > ul.flyout-left,
+  .header--plain .navmenu .dropdown .dropdown:hover > ul.flyout-left,
+  .header--plain .navmenu .dropdown .dropdown:focus-within > ul.flyout-left {
+    right: 100%;
+    left: auto;
+    margin: 0 8px 0 0;
+  }
+
+  .header--plain .navmenu .dropdown .dropdown > ul.flyout-left {
+    transform: translateX(6px);
+  }
+
+  .header--plain .navmenu .dropdown .dropdown:hover > ul,
+  .header--plain .navmenu .dropdown .dropdown:focus-within > ul {
+    transform: none;
+  }
+
+  /* An invisible bridge over the gap between an item and its panel, so the pointer can travel into the
+     panel without the hover (and the panel) dropping. */
   .header--plain .navmenu .dropdown > ul::before {
     content: '';
     position: absolute;
@@ -120,23 +189,42 @@
   }
 
   .header--plain .navmenu .dropdown .dropdown > ul::before {
-    inset: 0 -12px 0 auto;
-    width: 12px;
+    inset: 0 auto 0 -14px;
+    width: 14px;
     height: auto;
   }
 
-  .header--plain .navmenu a::after {
-    display: none;
+  .header--plain .navmenu .dropdown .dropdown > ul.flyout-left::before {
+    inset: 0 -14px 0 auto;
   }
 
-  /* Dropdown panels still need a surface so their links stay readable over the page. */
-  .header--plain .navmenu .dropdown ul {
-    margin-top: 6px;
-    padding: 6px;
-    border-radius: 16px;
-    background: #ffffff;
-    border: 1px solid rgba(15, 15, 20, 0.06);
-    box-shadow: 0 24px 48px -24px rgba(20, 24, 40, 0.3);
+  /* After a link is clicked every panel stays shut until the pointer leaves the menu (NavMenu.jsx). */
+  .header--plain .navmenu.is-closing .dropdown ul {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  /* Arrow on rows that open a further panel. */
+  .header--plain .navmenu .nav-caret {
+    margin-left: 16px;
+    font-size: 11px;
+    line-height: 1;
+    opacity: 0.45;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .header--plain .navmenu .dropdown:hover > a .nav-caret {
+    opacity: 1;
+  }
+
+  /* Left-opening rows carry their arrow in front of the label. */
+  .header--plain .navmenu a:has(.bi-chevron-left) {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  .header--plain .navmenu a .bi-chevron-left.nav-caret {
+    margin: 0 10px 0 0;
   }
 
   .header--plain .navmenu .dropdown ul a {
@@ -205,6 +293,10 @@
   .header--plain .navmenu .active:focus {
     color: var(--plain-ink);
     background: var(--plain-hover);
+  }
+
+  .header--plain .navmenu .nav-caret {
+    display: none;
   }
 
   .header--plain .navmenu .dropdown ul {

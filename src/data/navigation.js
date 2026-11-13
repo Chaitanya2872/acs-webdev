@@ -45,12 +45,13 @@ export const mainNav = [
   { label: 'Our Team', to: paths.team },
   {
     label: 'Investors',
+    // Last in the bar, so its nested panels open towards the middle of the screen.
+    flyout: 'left',
     children: [
       { label: 'Board of Directors', to: paths.boardOfDirectors },
       { label: 'Investor Presentations', to: paths.documents('investor-presentations') },
       {
         label: 'Financial Results',
-        alignLeft: true,
         children: [
           { label: 'Unaudited', to: paths.documents('unaudited-financial-results') },
           { label: 'Audited', to: paths.documents('audited-financial-results') },
